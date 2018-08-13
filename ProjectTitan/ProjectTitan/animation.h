@@ -14,8 +14,8 @@ public:
 	Animation();
 	~Animation();
 
-	void Init(esm::vec3 startPos, esm::vec3 endPos, FLOAT totalSecond = 1.0f);
-	void Init(esm::vec4 startPos, esm::vec4 endPos, FLOAT totalSecond = 1.0f);
+	void Init(cm::vec3 startPos, cm::vec3 endPos, FLOAT totalSecond = 1.0f);
+	void Init(cm::vec4 startPos, cm::vec4 endPos, FLOAT totalSecond = 1.0f);
 	void Init(FLOAT startAngle, FLOAT endAngle, FLOAT x, FLOAT y, FLOAT z, FLOAT totalSecond = 1.0f);
 	void Update(FLOAT second);
 	void Set(Model* model);
@@ -25,8 +25,8 @@ public:
 	void InverseStart();
 	void Restart();
 
-	esm::vec4 mStartPos, mEndPos, mAnimDir;
-	esm::vec4 mCurrentPos, mMovePos;;
+	cm::vec4 mStartPos, mEndPos, mAnimDir;
+	cm::vec4 mCurrentPos, mMovePos;;
 	FLOAT mTotalTime, mCurrentTime;
 
 	Model* mCtlModel;

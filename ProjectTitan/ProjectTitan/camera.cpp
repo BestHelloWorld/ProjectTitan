@@ -6,7 +6,7 @@
 
 
 
-void Camera::Init(esm::vec3 eye, esm::vec3 center, esm::vec3 up)
+void Camera::Init(cm::vec3 eye, cm::vec3 center, cm::vec3 up)
 {
 	mEye = eye;
 	mCenter = center;
@@ -14,13 +14,13 @@ void Camera::Init(esm::vec3 eye, esm::vec3 center, esm::vec3 up)
 	mUp = up;
 	mRightDir = mViewDir.cross(mUp);
 	mOffset = 0.0f;
-	mTPos = esm::vec3(0.0f);
+	mTPos = cm::vec3(0.0f);
 
 	mYaw = 270.0f;
 	mPitch = 0.0f;
 
-	mViewMat = new esm::mat4(1.0f);
-	mProjMat = new esm::mat4(1.0f);
+	mViewMat = new cm::mat4(1.0f);
+	mProjMat = new cm::mat4(1.0f);
 
 }
 
@@ -38,7 +38,7 @@ void Camera::SetPosition(FLOAT x, FLOAT y, FLOAT z)
 	mEye.z = z;
 }
 
-void Camera::SetPosition(esm::vec3 pos)
+void Camera::SetPosition(cm::vec3 pos)
 {
 	SetPosition(pos.x, pos.y, pos.z);
 }
@@ -62,9 +62,9 @@ void Camera::Update()
 	// UPDATE RAY
 	if (mYaw && mPitch)
 	{
-		mViewDir.x = esm::cos(mYaw) * esm::cos(mPitch);
-		mViewDir.y = esm::sin(mPitch);
-		mViewDir.z = esm::sin(mYaw) * esm::cos(mPitch);
+		mViewDir.x = cm::cos(mYaw) * cm::cos(mPitch);
+		mViewDir.y = cm::sin(mPitch);
+		mViewDir.z = cm::sin(mYaw) * cm::cos(mPitch);
 		mViewDir = mViewDir.normalize();
 		mRightDir = mViewDir.cross(mUp);
 	}
@@ -73,22 +73,22 @@ void Camera::Update()
 	mEye = mEye + (mRightDir * mTPos.x);
 	mEye = mEye + (mUp * mTPos.y);
 	mEye = mEye - (mViewDir * mTPos.z);
-	mTPos = esm::vec3(0.0f);
+	mTPos = cm::vec3(0.0f);
 
 	*mViewMat = _getViewMatrix();
 	//*mProjMat = _getProjectionMatrix();
 }
 
-esm::vec4 Camera::WorldToScreen(esm::vec3 pos)
+cm::vec4 Camera::WorldToScreen(cm::vec3 pos)
 {
-	esm::vec4 r = _getProjectionMatrix()*_getViewMatrix() * esm::vec4(pos);
+	cm::vec4 r = _getProjectionMatrix()*_getViewMatrix() * cm::vec4(pos);
 	return r;
 }
 
-esm::vec4 Camera::NormalizeDevicePos(esm::vec4 worldPos)
+cm::vec4 Camera::NormalizeDevicePos(cm::vec4 worldPos)
 {
 	//std::cout << esm::mat4(GetProjectionMatrix()).dump() << std::endl;
-	esm::vec4 normalizePos = _getProjectionMatrix()*_getViewMatrix()*worldPos;
+	cm::vec4 normalizePos = _getProjectionMatrix()*_getViewMatrix()*worldPos;
 	return normalizePos / normalizePos.w;
 }
 
@@ -97,7 +97,7 @@ void Camera::CameraForward(FLOAT offset)
 	mOffset -= offset;
 }
 
-esm::vec3 Camera::GetEyePos()
+cm::vec3 Camera::GetEyePos()
 {
 	return (mEye - (mViewDir * mOffset));
 }
@@ -114,30 +114,30 @@ FLOAT* Camera::GetProjectionMatrix()
 	return mProjMat->v;
 }
 
-esm::mat4 Camera::_getViewMatrix()
+cm::mat4 Camera::_getViewMatrix()
 {
-	return esm::lookAt(mEye - (mViewDir * mOffset), mEye + mViewDir, mUp);
+	return cm::lookAt(mEye - (mViewDir * mOffset), mEye + mViewDir, mUp);
 }
 
-esm::mat4 Camera::_getProjectionMatrix()
+cm::mat4 Camera::_getProjectionMatrix()
 {
 	switch (mCurrentStatus)
 	{
 	case Camera::PERSPECTIVE:
 	{
-		return esm::perspective(mPerspFov, mPerspAspect, 0.1f, 100.0f).v;
+		return cm::perspective(mPerspFov, mPerspAspect, 0.1f, 100.0f).v;
 	}
 	case Camera::ORTHO:
 	{
 		FLOAT halfWidth = mOrthoWidth / 2;
 		FLOAT halfHeight = mOrthoHeight / 2;
-		return esm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, 0.1f, 100.0f).v;
+		return cm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, 0.1f, 100.0f).v;
 	}
 	default:
 		break;
 	}
 
-	return esm::mat4(1.0f);
+	return cm::mat4(1.0f);
 }
 
 void Camera::Switch3D(FLOAT fov, FLOAT aspect)
@@ -266,15 +266,15 @@ void Skybox::Draw()
 	location = glGetUniformLocation(mProgram->GetProgramId(), SHADER_UNIFORM_MODEL_MATRIX);
 	if (location >= 0)
 	{
-		esm::vec4 pos = mCamera->GetEyePos();
+		cm::vec4 pos = mCamera->GetEyePos();
 		//esm::vec4 pos = mCamera->mEye;
 		if (mSize == 1.0f)
 		{
-			glUniformMatrix4fv(location, 1, GL_TRUE, esm::translate(pos.x, pos.y, pos.z).v);
+			glUniformMatrix4fv(location, 1, GL_TRUE, cm::translate(pos.x, pos.y, pos.z).v);
 		}
 		else
 		{
-			glUniformMatrix4fv(location, 1, GL_TRUE, (esm::translate(pos.x, pos.y, pos.z) * esm::scale(mSize, mSize, mSize)).v);
+			glUniformMatrix4fv(location, 1, GL_TRUE, (cm::translate(pos.x, pos.y, pos.z) * cm::scale(mSize, mSize, mSize)).v);
 		}
 	}
 

@@ -35,12 +35,12 @@ void TextBitmap::Init(const CHAR * vs, const CHAR * fs, FLOAT screen_width, FLOA
 	mCamera->Switch2D(screen_width, screen_height);
 	mProgram->Init(vs, fs, mCamera);
 	mVBO->SetSize(4);
-	mColor = esm::vec4(1.0f);
+	mColor = cm::vec4(1.0f);
 }
 
 void TextBitmap::SetColor(FLOAT r, FLOAT g, FLOAT b, FLOAT a)
 {
-	mColor = esm::vec4(r, g, b, a);
+	mColor = cm::vec4(r, g, b, a);
 }
 
 void TextBitmap::SetAlpha(FLOAT a)
@@ -237,7 +237,7 @@ void TextBitmap::DrawBitmap(UINT texture, INT vbo)
 	location = glGetUniformLocation(mProgram->GetProgramId(), SHADER_UNIFORM_MODEL_MATRIX);
 	if (location >= 0)
 	{
-		glUniformMatrix4fv(location, 1, GL_FALSE, esm::mat4(1.0f).v);
+		glUniformMatrix4fv(location, 1, GL_FALSE, cm::mat4(1.0f).v);
 	}
 
 	location = glGetUniformLocation(mProgram->GetProgramId(), SHADER_SAMPLER2D_MAIN_TEXTURE);

@@ -7,7 +7,7 @@ void Aircraft::Init(const CHAR * vs, const CHAR * fs, const CHAR * obj, Camera *
 {
 	mCamera = NULL;
 	Unit::Init(vs, fs, obj, cam);
-	mPosition = new esm::vec3(0.0f);
+	mPosition = new cm::vec3(0.0f);
 }
 
 void Aircraft::Update(FLOAT second)
@@ -55,10 +55,10 @@ void Aircraft::Move(FLOAT x, FLOAT y, FLOAT z)
 
 	z = abs(x) > 0.0f ? abs(x) : z;
 
-	*mPosition = *mPosition + esm::vec3(x, y, z);
+	*mPosition = *mPosition + cm::vec3(x, y, z);
 	if(mCamera)
 	{
-		mCamera->mEye = mCamera->mEye + esm::vec3(x, y, z);
+		mCamera->mEye = mCamera->mEye + cm::vec3(x, y, z);
 		Unit::LoadIdentity();
 		Unit::Move(*mPosition);
 		Roll(x);

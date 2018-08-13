@@ -7,6 +7,8 @@
 #include "camera.h"
 #include "program.h"
 
+#define DEFAULT_FONT_SIZE 20
+
 class VertexBuffer;
 
 /*
@@ -30,7 +32,7 @@ public:
 	}Char;
 
 
-	void Init(const CHAR * vs, const CHAR * fs, FLOAT screen_width, FLOAT screen_height, const CHAR * path, INT pixel_size);
+	void Init(const CHAR * vs, const CHAR * fs, FLOAT screen_width, FLOAT screen_height, const CHAR * path, INT pixel_size = DEFAULT_FONT_SIZE);
 	void SetColor(FLOAT r, FLOAT g, FLOAT b, FLOAT a = 1.0f);
 	void SetAlpha(FLOAT a);
 	void Draw(const WCHAR * str, FLOAT x, FLOAT y);
@@ -57,7 +59,7 @@ private:
 
 	VertexBuffer * mVBO;
 
-	esm::vec4 mColor;
+	cm::vec4 mColor;
 
 	//FLOAT mAlpha;
 };

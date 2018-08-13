@@ -57,9 +57,9 @@ public:
 	void SetMoveAdd(FLOAT x, FLOAT y, FLOAT z);
 	void Scale(FLOAT x, FLOAT y, FLOAT z);
 	void SetPosition(FLOAT x, FLOAT y, FLOAT z);
-	esm::vec3 GetPosition();
+	cm::vec3 GetPosition();
 	void Rotate(FLOAT angle, FLOAT x, FLOAT y, FLOAT z);
-	void MultiplyModelMatrix(esm::mat4 m);
+	void MultiplyModelMatrix(cm::mat4 m);
 	void LoadIdentity();
 	void SetShadowCamera(Camera camera);
 	Model * Clone();
@@ -69,8 +69,8 @@ public:
 
 public:
 	VertexBuffer * mVertexBuffer;
-	esm::mat4* mModelMatrix;
-	esm::vec3 mMoveAdded;
+	cm::mat4* mModelMatrix;
+	cm::vec3 mMoveAdded;
 	FLOAT *mLightViewMatrix, *mLightProjectMatrix;
 
 	INT mProgram;
@@ -88,12 +88,12 @@ public:
 	ModelEmit();
 	~ModelEmit();
 
-	void Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CHAR* modelPath, esm::vec3 emitDir, esm::vec3 emitPos, FLOAT speed = 2.0f, FLOAT time = 3.0f);
+	void Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CHAR* modelPath, cm::vec3 emitDir, cm::vec3 emitPos, FLOAT speed = 2.0f, FLOAT time = 3.0f);
 	void Update(FLOAT second);
 	void SetCallback(ModelEmitCallback func);
 	void Erase(Model * model);
 	void SetPosition(FLOAT x, FLOAT y, FLOAT z);
-	void SetPosition(esm::vec3 pos);
+	void SetPosition(cm::vec3 pos);
 	void SetLightPosition(FLOAT x, FLOAT y, FLOAT z, BOOL specular = TRUE);
 	void SetTexture(const CHAR * name, const CHAR * filePath);
 	void SetTexture(const CHAR * name, UINT texture);
@@ -101,13 +101,14 @@ public:
 	void Scale(FLOAT x, FLOAT y, FLOAT z);
 	void Rotate(FLOAT angle, FLOAT x, FLOAT y, FLOAT z);
 	void Emit();
+	void Emit(FLOAT x, FLOAT y, FLOAT z);
 	void Draw();
 	void ShadowDraw();
 	Model * GetSampleModel() const;
 
 	FLOAT mSpeed, mTime;
 	Program * mProgram;
-	esm::vec3 mEmitDir, mEmitPos;
+	cm::vec3 mEmitDir, mEmitPos;
 	Model * mSampleModel;
 	std::vector<Model*> mModels;
 	ModelEmitCallback mCallback;

@@ -17,9 +17,9 @@ public:
 	void LoadIdentity();
 	void SetLightPos(FLOAT x, FLOAT y, FLOAT z, FLOAT w = 0.0f, BOOL specular = TRUE);
 	virtual void Move(FLOAT x, FLOAT y, FLOAT z);
-	virtual void Move(esm::vec3 pos);
+	virtual void Move(cm::vec3 pos);
 	void SetMoveAdd(FLOAT x, FLOAT y, FLOAT z);
-	esm::vec3 GetPosition();
+	cm::vec3 GetPosition();
 	void Rotate(FLOAT angle, FLOAT x, FLOAT y, FLOAT z);
 	void Scale(FLOAT x, FLOAT y, FLOAT z);
 	virtual void Draw();
@@ -28,7 +28,7 @@ public:
 	virtual void ShadowDraw();
 
 
-	esm::vec3 mMoveAdded;
+	cm::vec3 mMoveAdded;
 	Program * mProgram = NULL;
 	Model * mModel = NULL;
 

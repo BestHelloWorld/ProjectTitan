@@ -18,13 +18,13 @@ PointSprite::~PointSprite()
 	delete mMoveDir;
 }
 
-void PointSprite::Init(INT program, esm::vec3 pos, esm::vec3 moveDir)
+void PointSprite::Init(INT program, cm::vec3 pos, cm::vec3 moveDir)
 {
 	mProgram = program;
 	//mPointSize = pointSize;
-	mPosition = new esm::vec3(pos);
-	mMoveDir = new esm::vec3(moveDir.normalize());
-	mColor = new esm::vec4(1.0f);
+	mPosition = new cm::vec3(pos);
+	mMoveDir = new cm::vec3(moveDir.normalize());
+	mColor = new cm::vec4(1.0f);
 	mTime = 0.0f;
 }
 
@@ -37,10 +37,10 @@ void PointSprite::SetColor(FLOAT r, FLOAT g, FLOAT b)
 
 void PointSprite::Move(FLOAT x, FLOAT y, FLOAT z)
 {
-	*mPosition = *mPosition + esm::vec3(x, y, z);
+	*mPosition = *mPosition + cm::vec3(x, y, z);
 }
 
-void PointSprite::Move(esm::vec3 pos)
+void PointSprite::Move(cm::vec3 pos)
 {
 	*mPosition = *mPosition + pos;
 }
@@ -73,7 +73,7 @@ void PointSprite::Draw()
 		location = glGetUniformLocation(mProgram, SHADER_UNIFORM_MODEL_MATRIX);
 		if (location >= 0)
 		{
-			glUniformMatrix4fv(location, 1, GL_TRUE, esm::value_ptr(esm::mat4(1.0f)));
+			glUniformMatrix4fv(location, 1, GL_TRUE, cm::value_ptr(cm::mat4(1.0f)));
 		}
 	}
 	glDrawArrays(GL_POINTS, 0, 1);
@@ -83,13 +83,13 @@ void PointSprite::Draw()
 //------------------------------------------------------------
 // SpriteEmit
 //------------------------------------------------------------
-void SpriteEmit::Init(const CHAR* vs, const CHAR* fs, esm::vec3 emitDir, Camera* cam,
+void SpriteEmit::Init(const CHAR* vs, const CHAR* fs, cm::vec3 emitDir, Camera* cam,
                       FLOAT newSpritePerSecond, FLOAT spriteSpeed, BOOL autoEmit)
 {
 	mProgram = new Program;
 	mProgram->Init(vs, fs, cam);
-	mEmitDir = new esm::vec3(emitDir.normalize());
-	mEmitPos = new esm::vec3(0.0f);
+	mEmitDir = new cm::vec3(emitDir.normalize());
+	mEmitPos = new cm::vec3(0.0f);
 
 	mNewSpritePerSecond = newSpritePerSecond;
 	mSpriteSpeed = spriteSpeed;
@@ -126,7 +126,7 @@ void SpriteEmit::Update(FLOAT second)
 	//LOG_D("sprite size : %d", mSprites.size());
 
 	PointSprite* sprite = NULL;
-	esm::vec3 pos;
+	cm::vec3 pos;
 	//for (INT i = 0; i < count; ++i)
 	if (mAutoEmit)
 	{
@@ -146,7 +146,7 @@ void SpriteEmit::Emit()
 	mSprites.push_back(sprite);
 }
 
-void SpriteEmit::SetPosition(esm::vec3 pos)
+void SpriteEmit::SetPosition(cm::vec3 pos)
 {
 	*mEmitPos = pos;
 }

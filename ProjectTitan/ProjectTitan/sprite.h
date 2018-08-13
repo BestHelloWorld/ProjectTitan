@@ -9,11 +9,6 @@
 #define BUTTON_FONT_SZIE 32
 
 
-typedef struct tagRectf
-{
-	FLOAT left, top, right, bottom;
-}Rectf;
-
 class ImageSprite
 {
 public:
@@ -53,6 +48,8 @@ public:
 	void InitVAO();
 	void Set(FLOAT x, FLOAT y, FLOAT width, FLOAT height);
 	void Draw();
+
+	BOOL CheckHit(FLOAT x, FLOAT y);
 
 	BOOL mIsTouchDown;
 };

@@ -88,7 +88,7 @@ void ImageSprite::Draw()
 		location = glGetUniformLocation(mProgram, SHADER_UNIFORM_MODEL_MATRIX);
 		if (location >= 0)
 		{
-			glUniformMatrix4fv(location, 1, GL_TRUE, esm::mat4(1.0f).v);
+			glUniformMatrix4fv(location, 1, GL_TRUE, cm::mat4(1.0f).v);
 		}
 
 		location = glGetUniformLocation(mProgram, SHADER_UNIFORM_COLOR);
@@ -148,10 +148,15 @@ void ButtonManager::Init(const CHAR * vs, const CHAR * fs, FLOAT screen_width, F
 
 void ButtonManager::New(const CHAR * img_path, const WCHAR * text, FLOAT x, FLOAT y, FLOAT width, FLOAT height, std::function<void()> callback)
 {
-	SpriteManager::New(img_path, x, y, width, height);
+	//SpriteManager::New(img_path, x, y, width, height);
+	Button * is = new Button;
+	is->Init(mProgram->GetProgramId(), img_path, x, y, width, height);
+	mSprites.push_back(is);
 
 	mTexts.push_back(text);
 	mFuncs.push_back(callback);
+
+	LOG_D("sprite count : %d", mSprites.size());
 }
 
 void ButtonManager::Draw()
@@ -178,10 +183,21 @@ void ButtonManager::Draw()
 
 void ButtonManager::OnTouchDown(FLOAT x, FLOAT y)
 {
+	for (UINT i = 0; i < mSprites.size(); ++i)
+	{
+		if (((Button*)mSprites[i])->CheckHit(x, y))
+			((Button*)mSprites[i])->mIsTouchDown = TRUE;
+	}
 }
 
 void ButtonManager::OnTouchUp(FLOAT x, FLOAT y)
 {
+	for (UINT i = 0; i < mSprites.size(); ++i)
+	{
+		((Button*)mSprites[i])->mIsTouchDown = FALSE;
+		if (((Button*)mSprites[i])->CheckHit(x, y))
+			mFuncs[i]();
+	}
 }
 
 void Button::Init(INT program, const CHAR * img_path, FLOAT x, FLOAT y, FLOAT width, FLOAT height)
@@ -202,4 +218,15 @@ void Button::Set(FLOAT x, FLOAT y, FLOAT width, FLOAT height)
 void Button::Draw()
 {
 	ImageSprite::Draw();
+}
+
+BOOL Button::CheckHit(FLOAT x, FLOAT y)
+{
+	if (x > mPos.left && x < mPos.right &&
+		y > mPos.bottom && y < mPos.top)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
 }

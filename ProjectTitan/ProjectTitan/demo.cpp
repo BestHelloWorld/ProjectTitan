@@ -10,7 +10,7 @@ ModelEmit Enemy;
 
 
 FLOAT textTime;
-esm::vec4 textPos;
+cm::vec4 textPos;
 
 Terrain terrain;
 Aircraft raven;
@@ -26,8 +26,8 @@ void __stdcall ModelProc(Model * model)
 	for (INT i = 0; i < Enemy.mModels.size(); ++i)
 	{
 		//esm::vec3 pos1 = Raven.GetPosition();
-		esm::vec3 pos1 = (*Enemy.mModels[i]).GetPosition();
-		esm::vec3 pos2 = model->GetPosition();
+		cm::vec3 pos1 = (*Enemy.mModels[i]).GetPosition();
+		cm::vec3 pos2 = model->GetPosition();
 		FLOAT distance = ((pos1 - pos2) * 0.5f).magnitude();
 		if (distance <= 1.0f)
 		{
@@ -50,8 +50,8 @@ void MainScene::Init()
 
 	bMoveForward = FALSE, bMoveBackward = FALSE, bMoveLeft = FALSE, bMoveRight = FALSE, bMoveUp = FALSE, bMoveDown = FALSE;
 
-	cam.Init(esm::vec3(0.0f, 5.0f, 0.0f), esm::vec3(0.0f, 5.0f, -1.0f), esm::vec3(0.0f, 1.0f, 0.0f));
-	shadowCam.Init(esm::vec3(0.0f, 50.0f, 0.0f), esm::vec3(0.0f, 0.0f, 0.0f), esm::vec3(0.0f, 0.0f, -1.0f));
+	cam.Init(cm::vec3(0.0f, 5.0f, 0.0f), cm::vec3(0.0f, 5.0f, -1.0f), cm::vec3(0.0f, 1.0f, 0.0f));
+	shadowCam.Init(cm::vec3(0.0f, 50.0f, 0.0f), cm::vec3(0.0f, 0.0f, 0.0f), cm::vec3(0.0f, 0.0f, -1.0f));
 	cam.CameraForward(-30.0f);
 
 	skybox.Init("res/shader/skybox.vs", "res/shader/skybox.fs", &cam, 
@@ -73,7 +73,7 @@ void MainScene::Init()
 	terrain.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &cam, "res/images/height_256x256.bmp");
 	terrain.SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, "res/images/grass.bmp");
 	terrain.SetLightPos(0.0f, 10.0f, 0.0f, 0.0f, FALSE);
-	*terrain.mModelMatrix = *terrain.mModelMatrix * esm::rotate(45.0f, 0.0f, 1.0f, 0.0f);
+	*terrain.mModelMatrix = *terrain.mModelMatrix * cm::rotate(45.0f, 0.0f, 1.0f, 0.0f);
 	terrain.Move(-100.0f, 0.0f, -100.0f);
 	terrain.SetSize(5.0f, 20.0f, 5.0f);
 
@@ -84,12 +84,12 @@ void MainScene::Init()
 	raven.BindCamera(&cam);
 	raven.Move(0.0f, 20.0f, 0.0f);
 
-	Bullet.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &cam, "res/objs/rocket.obj", esm::vec3(0.0f, 0.0f, 1.0f), raven.GetPosition(), 100.0f);
+	Bullet.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &cam, "res/objs/rocket.obj", cm::vec3(0.0f, 0.0f, 1.0f), raven.GetPosition(), 100.0f);
 	//Bullet.Scale(0.2f, 0.2f, 0.2f);
 	Bullet.SetLightPosition(0.0f, 1.0f, 0.0f);
 	Bullet.SetCallback(ModelProc);
 
-	Enemy.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &cam, "res/objs/hunter/sources/hunter_rearside.obj", esm::vec3(0.0f, 0.0f, -1.0f), raven.GetPosition(), 50.0f, 10.0f);
+	Enemy.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &cam, "res/objs/hunter/sources/hunter_rearside.obj", cm::vec3(0.0f, 0.0f, -1.0f), raven.GetPosition(), 50.0f, 6.0f);
 	Enemy.SetLightPosition(0.0f, 1.0f, 0.0f);
 	Enemy.SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, "res/objs/hunter/textures/hunter_rearside.bmp");
 
@@ -109,7 +109,7 @@ void MainScene::SetViewport(FLOAT width, FLOAT height)
 	shadowCam.Switch2D(200.0f, 200.0f);
 
 	tb = TextBitmap::GetInstance();
-	tb->Init("res/shader/v.vs", "res/shader/f.fs", width, height, "res/font/msyh.ttc", 32);
+	tb->Init("res/shader/v.vs", "res/shader/f.fs", width, height, "res/font/msyh.ttc");
 
 	//SHADOW INIT
 	shadow.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &shadowCam, gWidth, gHeight);
@@ -172,7 +172,7 @@ void MainScene::OnKey(UINT event, UCHAR chr)
 		case 'N': glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
 		case 'V': bShowDepth = !bShowDepth; break;
 		case 'F': Bullet.Emit(); break;
-		case 'Z': Enemy.Emit(); break;
+		case 'Z': Enemy.Emit(rand()%100 - 50, 0.0f, 0.0f); break;
 		case 'B': SceneManager::GetInstance()->Next("WELC"); break;
 		}
 		break;
@@ -201,7 +201,7 @@ void MainScene::EventUpdate(FLOAT s)
 void MainScene::Move(FLOAT x, FLOAT y, FLOAT z)
 {
 	raven.Move(x, y, z);
-	esm::vec3 pos = raven.GetPosition();
+	cm::vec3 pos = raven.GetPosition();
 
 	Enemy.SetPosition(pos.x, pos.y, pos.z + 200.0f);
 	Bullet.SetPosition(pos);
@@ -238,11 +238,8 @@ void MainScene::Draw(FLOAT s)
 	raven.Update(s);
 	raven.Draw();
 
-	//Bullet.Emit();
 	Bullet.Update(s);
 	Bullet.Draw();
-
-	//Enemy.Emit();
 	Enemy.Update(s);
 	Enemy.Draw();
 
@@ -256,7 +253,6 @@ void MainScene::Draw(FLOAT s)
 		framesPerSecond = 0;
 		currentMS = 0;
 	}
-	//FPS = /*1.0f / */s;
 	swprintf(str, 120, L"FramesPerSecond : %d\0", FPS);
 	tb->SetAlpha(1.0f);
 	tb->Draw(str, -gWidth * 0.5f, gHeight * 0.5f - 30);
@@ -280,6 +276,11 @@ void WelcScene::Init()
 void WelcScene::SetViewport(FLOAT width, FLOAT height)
 {
 	mCam.Switch3D(40.0f, width / height);
+
+	bm.Init("res/shader/imagesprite.vs", "res/shader/imagesprite.fs", width, height, "res/font/msyh.ttc");
+	bm.New("earth.bmp", L"START", 0.0f, 0.0f, 100.0f, 50.0f, []()->void {
+		LOG_D("START BTN Clicked");
+	});
 }
 
 void WelcScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
@@ -287,6 +288,7 @@ void WelcScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 	switch (event)
 	{
 	case EVENT_DOWN:
+		bm.OnTouchDown(x, y);
 		break;
 	case EVENT_MOVE:
 	{
@@ -294,6 +296,7 @@ void WelcScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 	}
 	break;
 	case EVENT_UP:
+		bm.OnTouchUp(x, y);
 		break;
 	}
 }
@@ -324,4 +327,5 @@ void WelcScene::Draw(FLOAT s)
 	CLEAR_COLOR(0.1f, 0.2f, 0.4f);
 	mCam.Update();
 
+	bm.Draw();
 }

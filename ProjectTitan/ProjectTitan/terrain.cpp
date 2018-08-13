@@ -7,11 +7,11 @@
 
 Terrain::Terrain():mHeightMapContent(0)
 {
-	mPosition = new esm::vec3[TERRAIN_SIZE*TERRAIN_SIZE];
+	mPosition = new cm::vec3[TERRAIN_SIZE*TERRAIN_SIZE];
 	mVertices = new VertexBuffer;
 	mProgram = new Program;
 	
-	mModelMatrix = new esm::mat4(1.0f);
+	mModelMatrix = new cm::mat4(1.0f);
 }
 
 Terrain::~Terrain()
@@ -39,7 +39,7 @@ void Terrain::Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CHAR
 		{
 			for (int j = 0; j < TERRAIN_SIZE; ++j)
 			{
-				mPosition[i * TERRAIN_SIZE + j] = esm::vec3(j*TERRAIN_QUAD_SIZE, 0.0f, i*TERRAIN_QUAD_SIZE);
+				mPosition[i * TERRAIN_SIZE + j] = cm::vec3(j*TERRAIN_QUAD_SIZE, 0.0f, i*TERRAIN_QUAD_SIZE);
 			}
 		}
 	}
@@ -50,7 +50,7 @@ void Terrain::Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CHAR
 			for (int j = 0; j < TERRAIN_SIZE; ++j)
 			{
 				mPosition[i * TERRAIN_SIZE + j] =
-					esm::vec3(j*TERRAIN_QUAD_SIZE, _getHeight(i, j), i*TERRAIN_QUAD_SIZE);
+					cm::vec3(j*TERRAIN_QUAD_SIZE, _getHeight(i, j), i*TERRAIN_QUAD_SIZE);
 			}
 		}
 	}
@@ -67,7 +67,7 @@ void Terrain::Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CHAR
 			mVertices->SetPosition(index++, mPosition[(i + 1)*TERRAIN_SIZE + j + 1].x, mPosition[(i + 1)*TERRAIN_SIZE + j + 1].y, mPosition[(i + 1)*TERRAIN_SIZE + j + 1].z);
 			mVertices->SetPosition(index++, mPosition[i*TERRAIN_SIZE + j + 1].x, mPosition[i*TERRAIN_SIZE + j + 1].y, mPosition[i*TERRAIN_SIZE + j + 1].z);
 
-			esm::vec3 normal = _getNormal(i, j);
+			cm::vec3 normal = _getNormal(i, j);
 			mVertices->SetNormal(index - 6, normal.x, normal.y, normal.z);
 			normal = _getNormal(i + 1, j);
 			mVertices->SetNormal(index - 5, normal.x, normal.y, normal.z);
@@ -149,12 +149,12 @@ void Terrain::SetLightPos(FLOAT x, FLOAT y, FLOAT z, FLOAT w, BOOL specular)
 
 void Terrain::SetPosition(FLOAT x, FLOAT y, FLOAT z)
 {
-	*mModelMatrix = esm::translate(x, y, z);
+	*mModelMatrix = cm::translate(x, y, z);
 }
 
 void Terrain::Move(FLOAT x, FLOAT y, FLOAT z)
 {
-	*mModelMatrix = *mModelMatrix * esm::translate(x, y, z);
+	*mModelMatrix = *mModelMatrix * cm::translate(x, y, z);
 }
 
 Program * Terrain::GetProgram()
@@ -177,7 +177,7 @@ void Terrain::Draw()
 		location = glGetUniformLocation(program, SHADER_UNIFORM_NORMAL_MATRIX);
 		if (location >= 0)
 		{
-			glUniformMatrix4fv(location, 1, GL_FALSE, esm::inverse(*mModelMatrix).v);
+			glUniformMatrix4fv(location, 1, GL_FALSE, cm::inverse(*mModelMatrix).v);
 		}
 
 		location = glGetUniformLocation(program, SHADER_UNIFORM_MODEL_MATRIX);
@@ -243,8 +243,8 @@ Terrain * Terrain::Clone()
 {
 	Terrain * terr = new Terrain;
 	memcpy(terr, this, sizeof(Terrain));
-	terr->mModelMatrix = new esm::mat4(1.0f);
-	memcpy(terr->mModelMatrix, mModelMatrix, sizeof(esm::mat4));
+	terr->mModelMatrix = new cm::mat4(1.0f);
+	memcpy(terr->mModelMatrix, mModelMatrix, sizeof(cm::mat4));
 	return terr;
 }
 
@@ -261,8 +261,8 @@ void Terrain::SetShadowMap(UINT shadowMap)
 
 void Terrain::PushMatrix()
 {
-	esm::mat4 *c = new esm::mat4;
-	memcpy(c, mModelMatrix, sizeof(esm::mat4));
+	cm::mat4 *c = new cm::mat4;
+	memcpy(c, mModelMatrix, sizeof(cm::mat4));
 	mStack.push(c);
 }
 
@@ -270,8 +270,8 @@ void Terrain::PopMatrix()
 {
 	if (mStack.size() <= 0)
 		return;
-	esm::mat4 *r = mStack.top();
-	memcpy(mModelMatrix, r, sizeof(esm::mat4));
+	cm::mat4 *r = mStack.top();
+	memcpy(mModelMatrix, r, sizeof(cm::mat4));
 	mStack.pop();
 	delete r;
 }
@@ -298,7 +298,7 @@ void Terrain::SetHeightMap(const CHAR * path)
 
 void Terrain::SetSize(FLOAT x, FLOAT y, FLOAT z)
 {
-	*mModelMatrix = *mModelMatrix * esm::scale(x, y, z);
+	*mModelMatrix = *mModelMatrix * cm::scale(x, y, z);
 }
 
 FLOAT Terrain::_getHeight(INT i, INT j)
@@ -311,11 +311,11 @@ FLOAT Terrain::_getHeight(INT i, INT j)
 	return mHeightMapContent[(i * mHeightMapWidth + j) * 3] / 255.0f;
 }
 
-esm::vec3 Terrain::_getNormal(INT i, INT j)
+cm::vec3 Terrain::_getNormal(INT i, INT j)
 {
 	FLOAT l = _getHeight(i, j - 1);
 	FLOAT r = _getHeight(i, j + 1);
 	FLOAT f = _getHeight(i - 1, j);
 	FLOAT b = _getHeight(i + 1, j);
-	return esm::vec3(l - r, 2.0f, f - b).normalize();
+	return cm::vec3(l - r, 2.0f, f - b).normalize();
 }

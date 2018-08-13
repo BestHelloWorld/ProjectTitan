@@ -64,6 +64,8 @@ public:
 
 	Camera mCam;
 	Skybox skybox;
+
+	ButtonManager bm;
 };
 
 #endif

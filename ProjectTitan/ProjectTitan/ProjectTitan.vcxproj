@@ -189,7 +189,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="demo.h" />
-    <ClInclude Include="esm.hpp" />
+    <ClInclude Include="cmath.hpp" />
     <ClInclude Include="framebuffer.h" />
     <ClInclude Include="fullscreenquad.h" />
     <ClInclude Include="list.hpp" />

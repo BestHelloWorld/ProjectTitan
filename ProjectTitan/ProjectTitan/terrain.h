@@ -36,11 +36,11 @@ public:
 
 	void PushMatrix();
 	void PopMatrix();
-	std::stack<esm::mat4*> mStack;
+	std::stack<cm::mat4*> mStack;
 
 	Program * mProgram;
 	Camera * mCamera;
-	esm::vec3 * mPosition;
+	cm::vec3 * mPosition;
 	VertexBuffer * mVertices;
 	UINT mVertexArray;
 
@@ -50,12 +50,12 @@ public:
 		INT mHeightMapWidth, mHeightMapHeight;
 	};
 
-	esm::mat4* mModelMatrix;
+	cm::mat4* mModelMatrix;
 	FLOAT *mLightViewMatrix, *mLightProjectMatrix;
 
 private:
 	FLOAT _getHeight(INT x, INT y);
-	esm::vec3 _getNormal(INT x, INT y);
+	cm::vec3 _getNormal(INT x, INT y);
 	inline BOOL Check();
 };
 

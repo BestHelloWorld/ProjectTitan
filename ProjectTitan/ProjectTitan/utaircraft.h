@@ -18,7 +18,7 @@ public:
 	void Move(FLOAT x, FLOAT y, FLOAT z);
 	void Draw();
 
-	esm::vec3 * mPosition;
+	cm::vec3 * mPosition;
 	FLOAT mRollAngle;
 
 	Camera * mCamera;

@@ -28,7 +28,7 @@
 #include <unordered_map>
 #include <sstream>
 
-#include "esm.hpp"
+#include "cmath.hpp"
 
 
 #define ENUM GLenum
@@ -94,7 +94,7 @@
 #define SHADER_MATERIAL_DIFFUSE "U_DiffuseMaterial"
 #define SHADER_MATERIAL_SPECULAR "U_SpecularMaterial"
 
-#define CLEAR_COLOR(r, g, b)	glClearColor(r, g, b, 1.0f); glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+#define CLEAR_COLOR(r, g, b) glClearColor(r, g, b, 1.0f); glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 #define BLEND_BEGIN		glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 #define BLEND_END		glDisable(GL_BLEND)
 #define DEPTH_TEST_BEGIN glEnable(GL_DEPTH_TEST)
@@ -104,8 +104,6 @@
 #define EVENT_UP			0x1101
 #define EVENT_MOVE			0x1102
 #define EVENT_DOWN			0x1103
-
-//typedef void(_stdcall*DrawProc) (FLOAT ms);
 
 // CAMERA CONFIG
 #define MOVE_RATIO 6.0f
@@ -133,4 +131,9 @@
 //		FLOAT left, top, right, bottom;
 //	};
 //}
+
+typedef struct tagRectf
+{
+	FLOAT left, top, right, bottom;
+}Rectf;
 #endif

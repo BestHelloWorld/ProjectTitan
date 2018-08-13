@@ -59,7 +59,7 @@ void Unit::Move(FLOAT x, FLOAT y, FLOAT z)
 	mModel->Move(x, y, z);
 }
 
-void Unit::Move(esm::vec3 pos)
+void Unit::Move(cm::vec3 pos)
 {
 	mModel->Move(pos.x, pos.y, pos.z);
 }
@@ -81,7 +81,7 @@ void Unit::LoadIdentity()
 	mModel->LoadIdentity();
 }
 
-esm::vec3 Unit::GetPosition()
+cm::vec3 Unit::GetPosition()
 {
 	return mModel->GetPosition();
 }

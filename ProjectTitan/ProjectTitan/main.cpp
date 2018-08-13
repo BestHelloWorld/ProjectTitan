@@ -14,6 +14,9 @@ POINT originPos;
 POINT bufferPos;
 bool bCaptureCursor;
 
+float screenWidth;
+float screenHeight;
+
 LRESULT CALLBACK WinProc(HWND, UINT, WPARAM, LPARAM);
 
 HGLRC
@@ -74,8 +77,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShow
 	{ 0, 0, 1024, 762 };
 	AdjustWindowRect(&screen, WS_OVERLAPPEDWINDOW, 0);
 
-	float screenWidth = screen.right - screen.left;
-	float screenHeight = screen.bottom - screen.top;
+	screenWidth = screen.right - screen.left;
+	screenHeight = screen.bottom - screen.top;
 
 	HWND hWnd =
 		CreateWindowEx(0, szClassName, szWinName, WS_OVERLAPPEDWINDOW, 200, 200, screenWidth, screenHeight, 0, 0, hInstance, 0);
@@ -108,16 +111,16 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShow
 
 	glewInit();
 
-	if (wglCreateContextAttribsARB)
-	{
-		wglDeleteContext(rc);
-		ReleaseDC(hWnd, dc);
-		DestroyWindow(hWnd);
-		hWnd = CreateWindowEx(0, szClassName, szWinName, WS_OVERLAPPEDWINDOW, 200, 200, screenWidth, screenHeight, 0, 0, hInstance, 0);
-		rc = CreateGLRC(hWnd);
-		dc = GetDC(hWnd);
-		wglMakeCurrent(dc, rc);
-	}
+	//if (wglCreateContextAttribsARB)
+	//{
+	//	wglDeleteContext(rc);
+	//	ReleaseDC(hWnd, dc);
+	//	DestroyWindow(hWnd);
+	//	hWnd = CreateWindowEx(0, szClassName, szWinName, WS_OVERLAPPEDWINDOW, 200, 200, screenWidth, screenHeight, 0, 0, hInstance, 0);
+	//	rc = CreateGLRC(hWnd);
+	//	dc = GetDC(hWnd);
+	//	wglMakeCurrent(dc, rc);
+	//}
 
 	ShowWindow(hWnd, nShowCmd);
 	UpdateWindow(hWnd);
@@ -158,10 +161,19 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	switch (uMsg)
 	{
 	case WM_LBUTTONDOWN:
-		originPos.x = LWORD(lParam);
-		originPos.y = HWORD(lParam);
+	{
+		FLOAT x = LWORD(lParam);
+		FLOAT y = HWORD(lParam);
+		originPos.x = x;
+		originPos.y = y;
 		ClientToScreen(hWnd, (POINT*)&originPos);
 		bCaptureCursor = true;
+
+		FLOAT half_width = 512.0f;
+		FLOAT half_height = 762.0f * 0.5f;
+
+		OnTouch(EVENT_DOWN,x - half_width, half_height - y);
+	}
 		break;
 	case WM_MOUSEMOVE:
 		if (bCaptureCursor)
@@ -172,15 +184,22 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			float x = (cursorPos.x - originPos.x) / 800.0f;
 			float y = -(cursorPos.y - originPos.y) / 600.0f;
 			OnTouch(EVENT_MOVE, x, y);
-			//RotateViewDir(x, y);
-			//bufferPos.x += x;
-			//bufferPos.y += y;
 			SetCursorPos(originPos.x, originPos.y);
 		}
 		break;
 	case WM_LBUTTONUP:
+	{
+		FLOAT x = LWORD(lParam);
+		FLOAT y = HWORD(lParam);
+
+		FLOAT half_width = 512.0f;
+		FLOAT half_height = 762.0f * 0.5f;
+
+		OnTouch(EVENT_UP, x - half_width, half_height - y);
+
 		bCaptureCursor = false;
 		SetCursorPos(originPos.x, originPos.y);
+	}
 		break;
 	case WM_KEYDOWN:
 		OnKey(EVENT_DOWN, (CHAR)wParam);

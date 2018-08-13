@@ -9,33 +9,33 @@
 class Camera
 {
 public:
-	void Init(esm::vec3 eye = esm::vec3(0.0f, 0.0f, 0.0f), esm::vec3 center = esm::vec3(0.0f, 0.0f, -1.0f), esm::vec3 up = esm::vec3(0.0f, 1.0f, 0.0f));
+	void Init(cm::vec3 eye = cm::vec3(0.0f, 0.0f, 0.0f), cm::vec3 center = cm::vec3(0.0f, 0.0f, -1.0f), cm::vec3 up = cm::vec3(0.0f, 1.0f, 0.0f));
 	void Move(FLOAT x, FLOAT y, FLOAT z);
 	void SetPosition(FLOAT x, FLOAT y, FLOAT z);
-	void SetPosition(esm::vec3 pos);
+	void SetPosition(cm::vec3 pos);
 	void Rotate(FLOAT yaw, FLOAT pitch, FLOAT roll = 0);
 	void Update();
-	esm::vec4 WorldToScreen(esm::vec3 pos);
-	esm::vec4 NormalizeDevicePos(esm::vec4 worldPos);
+	cm::vec4 WorldToScreen(cm::vec3 pos);
+	cm::vec4 NormalizeDevicePos(cm::vec4 worldPos);
 	void CameraForward(FLOAT offset);
-	esm::vec3 GetEyePos();
+	cm::vec3 GetEyePos();
 	FLOAT* GetViewMatrix();
 	FLOAT* GetProjectionMatrix();
 	void Switch3D(FLOAT fov, FLOAT aspect);
 	void Switch2D(FLOAT width, FLOAT height);
 
-	esm::mat4 _getViewMatrix();
-	esm::mat4 _getProjectionMatrix();
+	cm::mat4 _getViewMatrix();
+	cm::mat4 _getProjectionMatrix();
 
 public:
-	esm::vec3 mViewDir;
-	esm::vec3 mRightDir;
-	esm::vec3 mEye;
-	esm::vec3 mCenter;
-	esm::vec3 mUp;
-	esm::vec3 mTPos;
-	esm::mat4 * mViewMat;
-	esm::mat4 * mProjMat;
+	cm::vec3 mViewDir;
+	cm::vec3 mRightDir;
+	cm::vec3 mEye;
+	cm::vec3 mCenter;
+	cm::vec3 mUp;
+	cm::vec3 mTPos;
+	cm::mat4 * mViewMat;
+	cm::mat4 * mProjMat;
 	FLOAT mOffset;
 	FLOAT mYaw;
 	FLOAT mRoll;

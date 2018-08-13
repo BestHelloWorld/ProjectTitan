@@ -19,13 +19,13 @@ void Animation::_init()
 {
 	mCurrentAnimStatus = NORMAL;
 	mCurrentTime = 0.0f;
-	mCurrentPos = esm::vec3(0.0f);
-	mMovePos = esm::vec3(0.0f);
-	mStartPos = esm::vec3(0.0f);
-	mEndPos = esm::vec3(0.0f);
+	mCurrentPos = cm::vec3(0.0f);
+	mMovePos = cm::vec3(0.0f);
+	mStartPos = cm::vec3(0.0f);
+	mEndPos = cm::vec3(0.0f);
 }
 
-void Animation::Init(esm::vec3 startPos, esm::vec3 endPos, FLOAT totalSecond)
+void Animation::Init(cm::vec3 startPos, cm::vec3 endPos, FLOAT totalSecond)
 {
 	_init();
 	mStartPos = startPos, mEndPos = endPos;
@@ -35,7 +35,7 @@ void Animation::Init(esm::vec3 startPos, esm::vec3 endPos, FLOAT totalSecond)
 	mCurrentTransform = TRANSLATE;
 }
 
-void Animation::Init(esm::vec4 startPos, esm::vec4 endPos, FLOAT totalSecond)
+void Animation::Init(cm::vec4 startPos, cm::vec4 endPos, FLOAT totalSecond)
 {
 	_init();
 	mStartPos = startPos, mEndPos = endPos;
@@ -52,7 +52,7 @@ void Animation::Init(FLOAT startAngle, FLOAT endAngle, FLOAT x, FLOAT y, FLOAT z
 	mEndPos.x = endAngle;
 	mTotalTime = totalSecond;
 	mCurrentPos.x = mStartPos.x;
-	mAnimDir = esm::vec3(x, y, z);
+	mAnimDir = cm::vec3(x, y, z);
 	mCurrentTransform = ROTATE;
 }
 

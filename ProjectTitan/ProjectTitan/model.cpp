@@ -119,7 +119,7 @@ Vertex *VertexBuffer::Get(INT index)
 //------------------------------------------------------------
 Model::Model()
 {
-	mModelMatrix = new esm::mat4(1.0f);
+	mModelMatrix = new cm::mat4(1.0f);
 	mIsHide = FALSE;
 }
 
@@ -223,7 +223,8 @@ void Model::Init(const INT program, const CHAR *modelPath)
 	mVertexBuffer->Clear();
 
 	mProgram = program;
-	mMoveAdded = esm::vec3(0.0f);
+	mMoveAdded = cm::vec3(0.0f);
+	mTime = 0.0f;
 
 	LOG_D("load model finish, vertexes count %d", vertexCount);
 
@@ -287,7 +288,7 @@ void Model::Draw()
 		location = glGetUniformLocation(mProgram, SHADER_UNIFORM_NORMAL_MATRIX);
 		if (location >= 0)
 		{
-			glUniformMatrix4fv(location, 1, GL_FALSE, esm::inverse(*mModelMatrix).v);
+			glUniformMatrix4fv(location, 1, GL_FALSE, cm::inverse(*mModelMatrix).v);
 		}
 
 		location = glGetUniformLocation(mProgram, SHADER_UNIFORM_MODEL_MATRIX);
@@ -314,7 +315,7 @@ void Model::Draw()
 
 void Model::Move(FLOAT x, FLOAT y, FLOAT z)
 {
-	*mModelMatrix = *mModelMatrix * esm::translate(mMoveAdded.x + x, mMoveAdded.y + y, mMoveAdded.z + z);
+	*mModelMatrix = *mModelMatrix * cm::translate(mMoveAdded.x + x, mMoveAdded.y + y, mMoveAdded.z + z);
 }
 
 void Model::SetMoveAdd(FLOAT x, FLOAT y, FLOAT z)
@@ -326,45 +327,44 @@ void Model::SetMoveAdd(FLOAT x, FLOAT y, FLOAT z)
 
 void Model::Scale(FLOAT x, FLOAT y, FLOAT z)
 {
-	*mModelMatrix = *mModelMatrix * esm::scale(x, y, z);
+	*mModelMatrix = *mModelMatrix * cm::scale(x, y, z);
 }
 
 void Model::Rotate(FLOAT angle, FLOAT x, FLOAT y, FLOAT z)
 {
-	*mModelMatrix = *mModelMatrix * esm::rotate(angle, x, y, z);
+	*mModelMatrix = *mModelMatrix * cm::rotate(angle, x, y, z);
 }
 
 void Model::SetPosition(FLOAT x, FLOAT y, FLOAT z)
 {
-	*mModelMatrix = esm::translate(x, y, z);
+	*mModelMatrix = cm::translate(x, y, z);
 }
 
-esm::vec3 Model::GetPosition()
+cm::vec3 Model::GetPosition()
 {
 	FLOAT x = (*mModelMatrix)[3];
 	FLOAT y = (*mModelMatrix)[7];
 	FLOAT z = (*mModelMatrix)[11];
-	return esm::vec3(x, y, z);
+	return cm::vec3(x, y, z);
 }
 
-void Model::MultiplyModelMatrix(esm::mat4 m)
+void Model::MultiplyModelMatrix(cm::mat4 m)
 {
-	esm::mat4 r(*mModelMatrix);
-	r = r * m;
-	*mModelMatrix = (r);
+	*mModelMatrix = *mModelMatrix * m;
 }
 
 void Model::LoadIdentity()
 {
-	*mModelMatrix = esm::mat4(1.0f);
+	*mModelMatrix = cm::mat4(1.0f);
 }
 
 Model * Model::Clone()
 {
 	Model * m = new Model;
 	memcpy(m, this, sizeof(Model));
-	m->mModelMatrix = new esm::mat4;
+	m->mModelMatrix = new cm::mat4;
 	*m->mModelMatrix = *mModelMatrix;
+	m->mTime = 0.0f;
 	m->mIsHide = FALSE;
 	return m;
 }
@@ -401,7 +401,7 @@ ModelEmit::~ModelEmit()
 }
 
 
-void ModelEmit::Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CHAR* modelPath, esm::vec3 emitDir, esm::vec3 emitPos, FLOAT speed, FLOAT time)
+void ModelEmit::Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CHAR* modelPath, cm::vec3 emitDir, cm::vec3 emitPos, FLOAT speed, FLOAT time)
 {
 	mProgram = new Program;
 	mProgram->Init(vs, fs, camera);
@@ -428,6 +428,8 @@ void ModelEmit::Erase(Model * model)
 			break;
 		}
 	}
+
+	delete model;
 }
 
 void ModelEmit::Update(FLOAT second)
@@ -435,6 +437,7 @@ void ModelEmit::Update(FLOAT second)
 	for (INT i = 0; i < mModels.size(); ++i)
 	{
 		mModels[i]->mTime += second;
+		//LOG_D("models : %d , time : %f", mModels.size(), mModels[i]->mTime);
 		if (mModels[i]->mTime >= mTime)
 		{
 			mModels[i]->CloneRelease();
@@ -443,7 +446,7 @@ void ModelEmit::Update(FLOAT second)
 			continue;
 		}
 
-		esm::vec3 pos = mEmitDir * mSpeed * second;
+		cm::vec3 pos = mEmitDir * mSpeed * second;
 		mModels[i]->Move(pos.x, pos.y, pos.z);
 		if (mCallback)
 		{
@@ -451,7 +454,6 @@ void ModelEmit::Update(FLOAT second)
 		}
 	}
 
-	//LOG_D("models : %d", mModels.size());
 }
 
 void ModelEmit::SetCallback(ModelEmitCallback func)
@@ -468,7 +470,7 @@ void ModelEmit::SetPosition(FLOAT x, FLOAT y, FLOAT z)
 	mSampleModel->SetPosition(x, y, z);
 }
 
-void ModelEmit::SetPosition(esm::vec3 pos)
+void ModelEmit::SetPosition(cm::vec3 pos)
 {
 	SetPosition(pos.x, pos.y, pos.z);
 }
@@ -520,9 +522,16 @@ void ModelEmit::Emit()
 	mModels.push_back(m);
 }
 
+void ModelEmit::Emit(FLOAT x, FLOAT y, FLOAT z)
+{
+	Model * m = mSampleModel->Clone();
+	m->MultiplyModelMatrix(cm::translate(x, y, z));
+	mModels.push_back(m);
+}
+
 void ModelEmit::Draw()
 {
-	esm::vec3 pos = mProgram->GetCamera()->mEye;
+	cm::vec3 pos = mProgram->GetCamera()->mEye;
 	mProgram->SetVector4f(SHADER_UNIFORM_CAMERA_POSITION, pos.x, pos.y, pos.z, 0.0f);
 	mProgram->Bind();
 	for (INT i = 0; i < mModels.size(); ++i)
