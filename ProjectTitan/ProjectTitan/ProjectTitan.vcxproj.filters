@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\ext">
+      <UniqueIdentifier>{ca1c4055-5714-460a-bb6d-0fedb097e173}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ext\FreeType">
+      <UniqueIdentifier>{d7b07c9f-f61e-4ee0-ab42-fe96e2068c6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ext\FreeType\FT_MODULES">
+      <UniqueIdentifier>{722b828f-0450-4905-a2af-c00c98908867}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shadow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="textbitmap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utaircraft.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utterrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="buttons.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="framebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fullscreenquad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="opengltest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pointsprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\autofit\autofit.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\bdf\bdf.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cff\cff.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\pcf\pcf.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psaux\psaux.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\pshinter\pshinter.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\psnames\psmodule.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\raster\raster.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\sfnt\sfnt.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\smooth\smooth.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\truetype\truetype.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\type1\type1.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cid\type1cid.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\type42\type42.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\winfonts\winfnt.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftbase.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftbbox.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftbdf.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftbitmap.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\cache\ftcache.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftcid.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftdebug.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftfntfmt.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftfstype.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftgasp.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftglyph.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftgxval.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\gzip\ftgzip.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftinit.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftlcdfil.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\lzw\ftlzw.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftmm.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftotval.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftpatent.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftpfr.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftstroke.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftsynth.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftsystem.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\fttype1.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\base\ftwinfnt.c">
+      <Filter>Source Files\ext\FreeType\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\src\pfr\pfr.c">
+      <Filter>Source Files\ext\FreeType</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="scene.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shadow.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="textbitmap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unit.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utaircraft.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utterrain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="animation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="buttons.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="demo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="esm.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="framebuffer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fullscreenquad.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="list.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="opengltest.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pointsprite.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="program.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
