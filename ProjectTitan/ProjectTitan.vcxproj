@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A1B43202-E593-432D-B10D-FBD88146D5A1}</ProjectGuid>
+    <RootNamespace>ProjectTitan</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>./include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/D_CRT_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>GLEW_STATIC;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>./lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;freetype.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>editbin /subsystem:console $(OutDir)$(TargetName)$(TargetExt)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PreprocessorDefinitions>GLEW_STATIC;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>./include;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>./lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="res\shader\blin_shadow.fs" />
+    <None Include="res\shader\blin_shadow.vs" />
+    <None Include="res\shader\f.fs" />
+    <None Include="res\shader\fog.fs" />
+    <None Include="res\shader\fog.vs" />
+    <None Include="res\shader\fullscreenquad.fs" />
+    <None Include="res\shader\fullscreenquad.vs" />
+    <None Include="res\shader\imagesprite.fs" />
+    <None Include="res\shader\imagesprite.vs" />
+    <None Include="res\shader\pointsprite.fs" />
+    <None Include="res\shader\pointsprite.vs" />
+    <None Include="res\shader\point_light.fs" />
+    <None Include="res\shader\point_light.vs" />
+    <None Include="res\shader\skybox.fs" />
+    <None Include="res\shader\skybox.vs" />
+    <None Include="res\shader\spot_light.fs" />
+    <None Include="res\shader\spot_light.vs" />
+    <None Include="res\shader\v.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\core\animation.h" />
+    <ClInclude Include="src\core\buttons.h" />
+    <ClInclude Include="src\core\camera.h" />
+    <ClInclude Include="src\core\define.h" />
+    <ClInclude Include="src\core\framebuffer.h" />
+    <ClInclude Include="src\core\fullscreenquad.h" />
+    <ClInclude Include="src\core\list.hpp" />
+    <ClInclude Include="src\core\math\cmath.hpp" />
+    <ClInclude Include="src\core\model.h" />
+    <ClInclude Include="src\core\pointsprite.h" />
+    <ClInclude Include="src\core\program.h" />
+    <ClInclude Include="src\core\scene.h" />
+    <ClInclude Include="src\core\shadow.h" />
+    <ClInclude Include="src\core\sound.h" />
+    <ClInclude Include="src\core\sprite.h" />
+    <ClInclude Include="src\core\terrain.h" />
+    <ClInclude Include="src\core\textbitmap.h" />
+    <ClInclude Include="src\core\unit.h" />
+    <ClInclude Include="src\core\utils.h" />
+    <ClInclude Include="src\core\vorbis\backends.h" />
+    <ClInclude Include="src\core\vorbis\bitrate.h" />
+    <ClInclude Include="src\core\vorbis\books\coupled\res_books_51.h" />
+    <ClInclude Include="src\core\vorbis\books\coupled\res_books_stereo.h" />
+    <ClInclude Include="src\core\vorbis\books\floor\floor_books.h" />
+    <ClInclude Include="src\core\vorbis\books\uncoupled\res_books_uncoupled.h" />
+    <ClInclude Include="src\core\vorbis\codebook.h" />
+    <ClInclude Include="src\core\vorbis\codec_internal.h" />
+    <ClInclude Include="src\core\vorbis\envelope.h" />
+    <ClInclude Include="src\core\vorbis\highlevel.h" />
+    <ClInclude Include="src\core\vorbis\lookup.h" />
+    <ClInclude Include="src\core\vorbis\lookup_data.h" />
+    <ClInclude Include="src\core\vorbis\lpc.h" />
+    <ClInclude Include="src\core\vorbis\lsp.h" />
+    <ClInclude Include="src\core\vorbis\masking.h" />
+    <ClInclude Include="src\core\vorbis\mdct.h" />
+    <ClInclude Include="src\core\vorbis\misc.h" />
+    <ClInclude Include="src\core\vorbis\modes\floor_all.h" />
+    <ClInclude Include="src\core\vorbis\modes\psych_11.h" />
+    <ClInclude Include="src\core\vorbis\modes\psych_16.h" />
+    <ClInclude Include="src\core\vorbis\modes\psych_44.h" />
+    <ClInclude Include="src\core\vorbis\modes\psych_8.h" />
+    <ClInclude Include="src\core\vorbis\modes\residue_16.h" />
+    <ClInclude Include="src\core\vorbis\modes\residue_44.h" />
+    <ClInclude Include="src\core\vorbis\modes\residue_44p51.h" />
+    <ClInclude Include="src\core\vorbis\modes\residue_44u.h" />
+    <ClInclude Include="src\core\vorbis\modes\residue_8.h" />
+    <ClInclude Include="src\core\vorbis\modes\setup_11.h" />
+    <ClInclude Include="src\core\vorbis\modes\setup_16.h" />
+    <ClInclude Include="src\core\vorbis\modes\setup_22.h" />
+    <ClInclude Include="src\core\vorbis\modes\setup_32.h" />
+    <ClInclude Include="src\core\vorbis\modes\setup_44.h" />
+    <ClInclude Include="src\core\vorbis\modes\setup_44p51.h" />
+    <ClInclude Include="src\core\vorbis\modes\setup_44u.h" />
+    <ClInclude Include="src\core\vorbis\modes\setup_8.h" />
+    <ClInclude Include="src\core\vorbis\modes\setup_X.h" />
+    <ClInclude Include="src\core\vorbis\os.h" />
+    <ClInclude Include="src\core\vorbis\psy.h" />
+    <ClInclude Include="src\core\vorbis\registry.h" />
+    <ClInclude Include="src\core\vorbis\scales.h" />
+    <ClInclude Include="src\core\vorbis\smallft.h" />
+    <ClInclude Include="src\core\vorbis\window.h" />
+    <ClInclude Include="src\demo.h" />
+    <ClInclude Include="src\opengltest.h" />
+    <ClInclude Include="src\utaircraft.h" />
+    <ClInclude Include="src\utterrain.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\core\animation.cpp" />
+    <ClCompile Include="src\core\buttons.cpp" />
+    <ClCompile Include="src\core\camera.cpp" />
+    <ClCompile Include="src\core\framebuffer.cpp" />
+    <ClCompile Include="src\core\fullscreenquad.cpp" />
+    <ClCompile Include="src\core\model.cpp" />
+    <ClCompile Include="src\core\ogg\bitwise.c" />
+    <ClCompile Include="src\core\ogg\framing.c" />
+    <ClCompile Include="src\core\pointsprite.cpp" />
+    <ClCompile Include="src\core\program.cpp" />
+    <ClCompile Include="src\core\scene.cpp" />
+    <ClCompile Include="src\core\shadow.cpp" />
+    <ClCompile Include="src\core\sound.cpp" />
+    <ClCompile Include="src\core\sprite.cpp" />
+    <ClCompile Include="src\core\terrain.cpp" />
+    <ClCompile Include="src\core\textbitmap.cpp" />
+    <ClCompile Include="src\core\unit.cpp" />
+    <ClCompile Include="src\core\utils.cpp" />
+    <ClCompile Include="src\core\vorbis\analysis.c" />
+    <ClCompile Include="src\core\vorbis\bitrate.c" />
+    <ClCompile Include="src\core\vorbis\block.c" />
+    <ClCompile Include="src\core\vorbis\codebook.c" />
+    <ClCompile Include="src\core\vorbis\envelope.c" />
+    <ClCompile Include="src\core\vorbis\floor0.c" />
+    <ClCompile Include="src\core\vorbis\floor1.c" />
+    <ClCompile Include="src\core\vorbis\info.c" />
+    <ClCompile Include="src\core\vorbis\lookup.c" />
+    <ClCompile Include="src\core\vorbis\lpc.c" />
+    <ClCompile Include="src\core\vorbis\lsp.c" />
+    <ClCompile Include="src\core\vorbis\mapping0.c" />
+    <ClCompile Include="src\core\vorbis\mdct.c" />
+    <ClCompile Include="src\core\vorbis\psy.c" />
+    <ClCompile Include="src\core\vorbis\registry.c" />
+    <ClCompile Include="src\core\vorbis\res0.c" />
+    <ClCompile Include="src\core\vorbis\sharedbook.c" />
+    <ClCompile Include="src\core\vorbis\smallft.c" />
+    <ClCompile Include="src\core\vorbis\synthesis.c" />
+    <ClCompile Include="src\core\vorbis\vorbisenc.c" />
+    <ClCompile Include="src\core\vorbis\vorbisfile.c" />
+    <ClCompile Include="src\core\vorbis\window.c" />
+    <ClCompile Include="src\demo.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\opengltest.cpp" />
+    <ClCompile Include="src\utaircraft.cpp" />
+    <ClCompile Include="src\utterrain.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
