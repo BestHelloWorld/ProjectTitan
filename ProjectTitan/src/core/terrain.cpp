@@ -25,7 +25,7 @@ void Terrain::Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CHAR
 		return;
 	mCamera = camera;
 	mProgram->Init(vs, fs, mCamera);
-	mProgram->SetVector4f(SHADER_MATERIAL_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f);
+	mProgram->SetUniform4f(SHADER_MATERIAL_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f);
 	SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, (UINT)0);
 	//mProgram->SetVector4f(SHADER_MATERIAL_DIFFUSE, 0.5f, 0.5f, 0.5f, 1.0f);
 
@@ -143,7 +143,7 @@ void Terrain::InitVAO()
 
 void Terrain::SetLightPos(FLOAT x, FLOAT y, FLOAT z, FLOAT w, BOOL specular)
 {
-	mProgram->SetVector4f("U_LightPos", x, y, z, w);
+	mProgram->SetUniform4f("U_LightPos", x, y, z, w);
 	UpdateMaterial(specular);
 }
 
@@ -176,12 +176,12 @@ void Terrain::SetSpecularMaterial(FLOAT r, FLOAT g, FLOAT b, FLOAT a)
 
 void Terrain::UpdateMaterial(BOOL specular)
 {
-	mProgram->SetVector4f(SHADER_MATERIAL_AMBIENT, mAmbientColor.r, mAmbientColor.g, mAmbientColor.b, mAmbientColor.a);
-	mProgram->SetVector4f(SHADER_MATERIAL_DIFFUSE, mDisffuseColor.r, mDisffuseColor.g, mDisffuseColor.b, mDisffuseColor.a);
+	mProgram->SetUniform4f(SHADER_MATERIAL_AMBIENT, mAmbientColor.r, mAmbientColor.g, mAmbientColor.b, mAmbientColor.a);
+	mProgram->SetUniform4f(SHADER_MATERIAL_DIFFUSE, mDisffuseColor.r, mDisffuseColor.g, mDisffuseColor.b, mDisffuseColor.a);
 	if (specular)
-		mProgram->SetVector4f(SHADER_MATERIAL_SPECULAR, mSpecularColor.r, mSpecularColor.g, mSpecularColor.b, mSpecularColor.a);
+		mProgram->SetUniform4f(SHADER_MATERIAL_SPECULAR, mSpecularColor.r, mSpecularColor.g, mSpecularColor.b, mSpecularColor.a);
 	else
-		mProgram->SetVector4f(SHADER_MATERIAL_SPECULAR, 0.0f, 0.0f, 0.0f, 1.0f);
+		mProgram->SetUniform4f(SHADER_MATERIAL_SPECULAR, 0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void Terrain::SetPosition(FLOAT x, FLOAT y, FLOAT z)
@@ -199,10 +199,10 @@ Program * Terrain::GetProgram()
 	return mProgram;
 }
 
-void Terrain::Draw()
+void Terrain::Draw(GLenum draw_type)
 {
 	mProgram->Bind();
-	mProgram->SetVector4f(SHADER_UNIFORM_CAMERA_POSITION, mCamera->mEye.x, mCamera->mEye.y, mCamera->mEye.z, 1.0f);
+	mProgram->SetUniform4f(SHADER_UNIFORM_CAMERA_POSITION, mCamera->mEye.x, mCamera->mEye.y, mCamera->mEye.z, 1.0f);
 
 	INT program = mProgram->GetProgramId();
 	INT location = -1;
@@ -235,7 +235,7 @@ void Terrain::Draw()
 			glUniformMatrix4fv(location, 1, GL_TRUE, mLightProjectMatrix);
 		}
 	}
-	glDrawArrays(GL_TRIANGLES, 0, mVertices->mVertexesCount);
+	glDrawArrays(draw_type, 0, mVertices->mVertexesCount);
 
 	glBindVertexArray(0);
 	mProgram->Unbind();
@@ -359,6 +359,11 @@ void Terrain::SetHeightMap(const CHAR * path)
 void Terrain::SetSize(FLOAT x, FLOAT y, FLOAT z)
 {
 	*mModelMatrix = *mModelMatrix * cm::scale(x, y, z);
+}
+
+void Terrain::SetUniform4f(const CHAR * uniform, FLOAT x, FLOAT y, FLOAT z, FLOAT w)
+{
+	mProgram->SetUniform4f(uniform, x, y, z, w);
 }
 
 FLOAT Terrain::_getHeight(INT i, INT j)

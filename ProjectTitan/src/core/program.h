@@ -59,7 +59,7 @@ public:
 	UINT SetTexture(const CHAR* name, const CHAR* path);
 	UINT SetTexture(const CHAR* name, UINT texture);
 	UINT SetTextureCube(const CHAR* name, UINT texture);
-	void SetVector4f(const CHAR* name, FLOAT x, FLOAT y, FLOAT z, FLOAT w);
+	void SetUniform4f(const CHAR* name, FLOAT x, FLOAT y, FLOAT z, FLOAT w);
 
 	void SetFogLimit(FLOAT nNear, FLOAT nFar);
 	void SetFogColor(FLOAT r, FLOAT g, FLOAT b, FLOAT a = 1.0f);

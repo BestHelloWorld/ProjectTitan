@@ -5,19 +5,27 @@
 #include <cstdlib>
 
 
-void LoadOGG(const char * file_name, std::vector<char> & buffer, ALenum & format, ALsizei & frequency)
+#if LOAD_FILE_TYPE == OGG_FILE
+
+extern "C"
+{
+#include "vorbis/vorbisfile.h"
+}
+
+void LoadFile(const char * file_name, std::vector<char> & buffer, ALenum & format, ALsizei & frequency)
 {
 	int endian = 0;
 	int bitStream;
 	long len = 0;
 	char buf[BUFFER_SIZE];
-	FILE * fp;
-	fp = fopen(file_name, "rb");
+	//	FILE * fp;
+	//	fp = fopen(file_name, "rb");
 
 	vorbis_info * pInfo;
 	OggVorbis_File oggFile;
 
-	ov_open(fp, &oggFile, NULL, 0);
+	//	ov_open(fp, &oggFile, NULL, 0);
+	ov_fopen(file_name, &oggFile);
 	pInfo = ov_info(&oggFile, 0);
 
 	if (!pInfo)
@@ -42,6 +50,128 @@ void LoadOGG(const char * file_name, std::vector<char> & buffer, ALenum & format
 
 	ov_clear(&oggFile);
 }
+#endif
+
+
+#if LOAD_FILE_TYPE == WAV_FILE
+void LoadFile(
+	const char * file_name,
+	std::vector<char> & buffer,
+	ALenum & format,
+	ALsizei & frequency)
+{
+	std::cout << "READ FILE " << file_name << std::endl;
+	FILE * fp = fopen(file_name, "rb");
+
+	char buf[5] = { 0 };
+	int bufi = 0;
+	int formati = 0;
+	int channeli = 0;
+	int frequencyi = 0;
+
+	fread(buf, sizeof(char), 4, fp);
+	//	std::cout << buf << std::endl;
+	if (strcmp(buf, "RIFF\0"))
+	{
+		std::cout << "CANNOT SUPPORT THIS FILE!" << std::endl;
+		return;
+	}
+
+	fread(&bufi, sizeof(char), 4, fp);
+	std::cout << "FILE LENGTH : " << bufi + 8 << " b" << std::endl;
+
+	fread(buf, sizeof(char), 4, fp);
+	if (strcmp(buf, "WAVE\0"))
+	{
+		std::cout << "CANNOT SUPPORT THIS FILE!" << std::endl;
+		return;
+	}
+
+	fread(buf, sizeof(char), 4, fp);
+	if (strcmp(buf, "fmt \0"))
+	{
+		std::cout << "CANNOT SUPPORT THIS FILE!" << std::endl;
+		return;
+	}
+
+	fread(&bufi, sizeof(char), 4, fp);
+	if (bufi > 16)
+		fseek(fp, sizeof(short), SEEK_CUR);
+
+	fread(&bufi, sizeof(char), 4, fp);
+	channeli = HWORD(bufi);
+	std::cout << "FILE CHANNEL : " << channeli << std::endl;
+
+	fread(&bufi, sizeof(char), 4, fp);
+	frequencyi = bufi;
+	std::cout << "FILE FREQUENCY : " << frequencyi << " kHz" << std::endl;
+
+
+	// TRANSFORM rate
+	fread(&bufi, sizeof(char), 4, fp);
+
+	fread(&bufi, sizeof(char), 4, fp);
+	// SAMPLES size
+	int samplessizei = LWORD(bufi);
+	formati = HWORD(bufi);
+	//	std::cout << samplessizei << " : " << formati << std::endl;
+
+	fread(buf, sizeof(char), 4, fp);
+	//	std::cout << "buf name : " << buf << std::endl;
+
+	while (strcmp(buf, "data\0"))
+	{
+		fread(&bufi, sizeof(char), 4, fp);
+		//		std::cout << bufi << std::endl;
+
+		fseek(fp, bufi, SEEK_CUR);
+
+		fread(buf, sizeof(char), 4, fp);
+		//		std::cout << "buf name : " << buf << std::endl;
+	}
+
+	fread(&bufi, sizeof(char), 4, fp);
+	//	std::cout << "DATE SIZE : " << bufi << " b" << std::endl;
+	char * data = new char[bufi];
+	fread(data, sizeof(char), bufi, fp);
+
+	/*
+	CONVERT TO BUFFER ARRAYS FROM DATAS
+	*/
+	buffer.insert(buffer.end(), data, data + bufi);
+	std::cout << "DATE SIZE : " << buffer.size() << " b" << std::endl;
+	delete data;
+
+	// SET format
+	switch (channeli) {
+	case 1:
+		switch (formati)
+		{
+		case 8:
+			format = AL_FORMAT_MONO8;
+			break;
+		default:
+			format = AL_FORMAT_MONO16;
+			break;
+		}
+		break;
+	default:
+		switch (formati)
+		{
+		case 8:
+			format = AL_FORMAT_STEREO8;
+			break;
+		default:
+			format = AL_FORMAT_STEREO16;
+			break;
+		}
+		break;
+	}
+
+	// SET frequency
+	frequency = frequencyi;
+}
+#endif
 
 Sound * Sound::mPool = new Sound;
 
@@ -62,7 +192,7 @@ void Sound::Release()
 	auto iter = mSounds.begin();
 	while (iter != mSounds.end())
 	{
-		int source = *iter._Ptr;
+		int source = *iter;
 		int buffer = 0;
 		alGetSourcei(source, AL_BUFFER, &buffer);
 		alDeleteSources(1, (unsigned int*)&source);
@@ -86,7 +216,7 @@ void Sound::LoadAudio(const char * ogg_file, unsigned int * source_id)
 	std::vector<char> arrays;
 	ALenum type;
 	int frequency;
-	LoadOGG(ogg_file, arrays, type, frequency);
+	LoadFile(ogg_file, arrays, type, frequency);
 
 	alBufferData(buffer, type, &arrays[0], arrays.size(), frequency);
 	alSourcei(source, AL_BUFFER, buffer);
@@ -95,7 +225,7 @@ void Sound::LoadAudio(const char * ogg_file, unsigned int * source_id)
 
 	*source_id = source;
 
-	mSoundsPos.insert(SoundPosPair(source, new POSITION{ 0.0f, 0.0f, 0.0f }));
+	mSoundsPos.insert(std::map<unsigned int, POSITION*>::value_type(source, new POSITION{ 0.0f, 0.0f, 0.0f }));
 	mSounds.push_back(source);
 
 	arrays.clear();
@@ -236,42 +366,43 @@ void Sound::PlayLoop(unsigned int audio_id, int count)
 	auto iter = mLoopCount.find(audio_id);
 	if (iter == mLoopCount.end())
 	{
-		iter = mLoopCount.insert(SoundLoopPlayPair(audio_id, count)).first;
+		iter = mLoopCount.insert(std::map<unsigned int, int>::value_type(audio_id, count)).first;
 	}
 	iter->second = count;
 
-	std::thread t([=](int * count)->void {
-		int state = 0;
-		while (*count)
-		{
-			while (1)
-			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(PL_CHECK_RATE));
-
-				alGetSourcei(audio_id, AL_SOURCE_STATE, &state);
-				if (!state)
-					return;
-
-				switch (state)
-				{
-				case AL_STOPPED:
-					alSourcePlay(audio_id);
-					goto _subcount;
-				case AL_PLAYING:
-				case AL_PAUSED:
-					break;
-				}
-			}
-		_subcount:
-			if (*count < 0)
-				continue;
-			else if (*count > 0)
-				--*count;
-		}
-
-		printf("thread was out");
-	}, &iter->second);
-	t.detach();
+	//	std::thread t([=](int * count)->void {
+	//		int state = 0;
+	//		while (*count)
+	//		{
+	//			while (1)
+	//			{
+	////				std::this_thread::sleep_for(std::chrono::milliseconds(PL_CHECK_RATE));
+	//				Sleep(PL_CHECK_RATE);
+	//
+	//				alGetSourcei(audio_id, AL_SOURCE_STATE, &state);
+	//				if (!state)
+	//					return;
+	//
+	//				switch (state)
+	//				{
+	//				case AL_STOPPED:
+	//					alSourcePlay(audio_id);
+	//					goto _subcount;
+	//				case AL_PLAYING:
+	//				case AL_PAUSED:
+	//					break;
+	//				}
+	//			}
+	//		_subcount:
+	//			if (*count < 0)
+	//				continue;
+	//			else if (*count > 0)
+	//				--*count;
+	//		}
+	//
+	//		printf("thread was out");
+	//	}, &iter->second);
+	//	t.detach();
 
 }
 

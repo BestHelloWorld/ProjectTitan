@@ -24,62 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shader\blin_shadow.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\blin_shadow.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\f.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\fog.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\fog.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\fullscreenquad.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\fullscreenquad.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\imagesprite.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\imagesprite.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\point_light.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\point_light.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\pointsprite.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\pointsprite.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\skybox.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\skybox.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\spot_light.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\spot_light.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\shader\v.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="src\core\math\cmath.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -144,9 +88,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utaircraft.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utterrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\vorbis\books\coupled\res_books_51.h">
@@ -335,9 +276,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utaircraft.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utterrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\core\vorbis\analysis.c">

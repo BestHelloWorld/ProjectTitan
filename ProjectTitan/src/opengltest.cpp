@@ -15,9 +15,7 @@ void Init()
 	manager->AddScene("WELC", new WelcScene);
 	manager->AddScene("OVER", new OverScene);
 	manager->InitScenes();
-	manager->Next("MAIN");
-
-	scene->Start();
+	manager->Next("WELC");
 }
 
 void SetViewportSize(FLOAT width, FLOAT height)

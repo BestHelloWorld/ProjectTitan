@@ -1,18 +1,25 @@
 #ifndef __SOUND_H
 #define __SOUND_H
 
+#include "define.h"
+
 extern "C"
 {
 #include "al.h"
 #include "alc.h"
-#include "vorbis/vorbisfile.h"
 }
 
-#include <vector>
-#include <map>
 
-#define BUFFER_SIZE   32768     // 32 KB buffers
-void LoadOGG(const char * file_name, std::vector<char> & buffer, ALenum & format, ALsizei & frequency);
+#define WAV_FILE 		0x4001
+#define OGG_FILE 		0x4002
+
+#ifndef LOAD_FILE_TYPE
+#define LOAD_FILE_TYPE	WAV_FILE
+#endif
+
+#define BUFFER_SIZE		32768     // 32 KB buffers
+
+void LoadFile(const char * file_name, std::vector<char> & buffer, ALenum & format, ALsizei & frequency);
 
 
 typedef struct tagPOSITION
@@ -76,10 +83,10 @@ private:
 	std::vector<unsigned int> mSounds;
 
 	POSITION mListenerPos;
-	typedef std::pair<unsigned int, POSITION*> SoundPosPair;
+	typedef std::map<unsigned int, POSITION*>::value_type SoundPosPair;
 	std::map<unsigned int, POSITION*> mSoundsPos;
 
-	typedef std::pair<unsigned int, int> SoundLoopPlayPair;
+	typedef std::map<unsigned int, int>::value_type SoundLoopPlayPair;
 	std::map<unsigned int, int> mLoopCount;
 };
 

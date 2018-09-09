@@ -67,7 +67,7 @@ void main()
 	vec3 N = V_Normal.xyz;
 	N = normalize(N);
 
-	//CALC DIFFUSE
+	// CALC DIFFUSE
 	vec4 diffuse = U_DiffuseMaterial * max(0.0, dot(L, N)) * attenuation;
 	
 	// CALC BLIN SPECULAR

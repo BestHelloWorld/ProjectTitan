@@ -3,9 +3,11 @@
 #include "framebuffer.h"
 #include "program.h"
 #include "fullscreenquad.h"
+#include "camera.h"
 
 
-Scene::Scene()
+Scene::Scene() :
+	mCurrentSM(NULL)
 {
 }
 Scene::~Scene()
@@ -34,7 +36,24 @@ void Scene::Draw(FLOAT s)
 
 }
 
+void Scene::InitDOF(const CHAR * mix_vs, const CHAR * mix_fs, INT width, INT height)
+{
+}
 
+SceneManager * Scene::GetSceneManager()
+{
+	return mCurrentSM;
+}
+
+void Scene::_setSceneManager(SceneManager * sm)
+{
+	mCurrentSM = sm;
+}
+
+
+
+
+DOF * SceneManager::mDOF = new DOF;
 SceneManager::SceneManager()
 {
 	mCurrent = NULL;
@@ -87,6 +106,10 @@ void SceneManager::InitScenes()
 
 	mSubFullQuad = new FullScreenQuad;
 	mSubFullQuad->Init();
+
+	mDOF->mDOF_fullScreen = new FullScreenQuad;
+	mDOF->mDOF_fullScreen->Init();
+	mDOF->mFbo = new  FrameBuffer;
 }
 
 void SceneManager::SetViewport(FLOAT width, FLOAT height)
@@ -118,7 +141,8 @@ void SceneManager::AddScene(const CHAR * sceneName, Scene*scene)
 	if ((!sceneName) || (!scene))
 		return;
 
-	mScenes.insert(std::pair<const CHAR *, Scene*>(sceneName, scene));
+	mScenes.insert(std::map<const CHAR *, Scene*>::value_type(sceneName, scene));
+	scene->_setSceneManager(this);
 }
 
 BOOL SceneManager::Erase(const CHAR * sceneName)
@@ -156,8 +180,11 @@ Scene * SceneManager::GetScene(const CHAR * sceneName)
 UCHAR * SceneManager::CaptureScene()
 {
 	INT size = (INT)mViewportWidth * (INT)mViewportHeight * 3;
-	if (size < 0.0f || size > 50000000.0f)
+	if (size <= 0.0f || size > 50000000.0f)
+	{
+		LOG_E("Error : cannot capture scene.");
 		return NULL;
+	}
 
 	UCHAR * buf = new UCHAR[size];
 	mMainFbo->Bind();
@@ -177,10 +204,10 @@ void SceneManager::_initTransition()
 	mSubFullQuad->SetTexture(buf, (INT)mViewportWidth, (INT)mViewportHeight, GL_RGB);
 	//mSubFullQuad->SetTexture(NULL, (INT)mViewportWidth, (INT)mViewportHeight, GL_RGB);
 	mSubFullQuad->Reset(FULL_SCREEN);
-	delete buf;
 
 	mMainFullQuad->Reset(FULL_SCREEN);
 	mMainFullQuad->Move(2.0f, 0.0f, FULL_SCREEN);
+	delete buf;
 }
 
 FLOAT total_distance = 0.f;
@@ -196,7 +223,7 @@ void SceneManager::_update(FLOAT elapse)
 		mMainFullQuad->Move(-move_distance*C, 0.0f, FULL_SCREEN);
 		mSubFullQuad->Move(-move_distance*C, 0.0f, FULL_SCREEN);
 
-		mSubFullQuad->Draw();
+		mSubFullQuad->Draw(FALSE);
 	}
 	else if (mMainFullQuad->GetX())
 	{
@@ -217,7 +244,8 @@ void SceneManager::Draw(FLOAT s)
 	CLEAR_COLOR(0.0f, 0.0f, 0.0f);
 
 	_update(s);
-	mMainFullQuad->Draw();
+
+	mMainFullQuad->Draw(FALSE);
 }
 
 void SceneManager::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)

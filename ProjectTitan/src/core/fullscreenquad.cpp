@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "model.h"
 #include "utils.h"
+#include "framebuffer.h"
 
 void FullScreenQuad::Init(ScreenLocation location)
 {
@@ -19,31 +20,101 @@ void FullScreenQuad::Init(ScreenLocation location)
 
 	mPosLoc = glGetAttribLocation(mProgram->GetProgramId(), "position");
 	mTexcLoc = glGetAttribLocation(mProgram->GetProgramId(), "texcoord");
-	mUTextLoc = glGetUniformLocation(mProgram->GetProgramId(), "U_Texture");
+	//mUTextLoc = glGetUniformLocation(mProgram->GetProgramId(), "U_Texture");
 }
 
-void FullScreenQuad::Draw()
+void FullScreenQuad::Init(const CHAR * vs, const CHAR * fs, ScreenLocation location)
 {
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	mProgram->Bind();
-    mVertexBuffer->Bind();
+	mVertexBuffer = new VertexBuffer;
+	mProgram = new Program;
 
-	glEnableVertexAttribArray(mPosLoc);
-	glEnableVertexAttribArray(mTexcLoc);
-	glVertexAttribPointer(mPosLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)((Vertex*)0)->Position);
-	glVertexAttribPointer(mTexcLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)((Vertex*)0)->Texcoord);
+	mVertexBuffer->SetSize(4);
+	Reset(location);
 
-	if (mUTextLoc >= 0 && mTexture != -1)
+	Camera*cam = new Camera;
+	cam->Init();
+	mProgram->Init(vs, fs, cam);
+
+	mPosLoc = glGetAttribLocation(mProgram->GetProgramId(), "position");
+	mTexcLoc = glGetAttribLocation(mProgram->GetProgramId(), "texcoord");
+}
+
+void FullScreenQuad::InitBlur(INT width, INT height, ScreenLocation location)
+{
+	Init(location);
+
+	mBlur.vblur = new FrameBuffer;
+	mBlur.vblur->Init();
+	mBlur.vblur->AttachColorBuffer(FBO_COLOR, GL_COLOR_ATTACHMENT0, width, height);
+	mBlur.vblur->AttachFinish();
+
+	mBlur.hblur = new FrameBuffer;
+	mBlur.hblur->Init();
+	mBlur.hblur->AttachColorBuffer(FBO_COLOR, GL_COLOR_ATTACHMENT0, width, height);
+	mBlur.hblur->AttachFinish();
+}
+
+void FullScreenQuad::Draw(BOOL is_drawBlur)
+{
+	if (!is_drawBlur)
 	{
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, mTexture);
-		glUniform1i(mUTextLoc, 1);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		mProgram->Bind();
+		mVertexBuffer->Bind();
+
+		glEnableVertexAttribArray(mPosLoc);
+		glEnableVertexAttribArray(mTexcLoc);
+		glVertexAttribPointer(mPosLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)((Vertex*)0)->Position);
+		glVertexAttribPointer(mTexcLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)((Vertex*)0)->Texcoord);
+
+		UINT location = glGetUniformLocation(mProgram->GetProgramId(), SHADER_SAMPLER2D_MAIN_TEXTURE);
+		if (location >= 0 && mTexture > 0)
+		{
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, mTexture);
+			glUniform1i(location, 1);
+		}
+		location = glGetUniformLocation(mProgram->GetProgramId(), SHADER_SAMPLER2D_ALPHA_TEXTURE);
+		if (location >= 0 && mAlphaMap > 0)
+		{
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, mAlphaMap);
+			glUniform1i(location, 2);
+		}
+
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+		mVertexBuffer->Unbind();
+		mProgram->Unbind();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+	else
+	{
+		UINT mLastTexture = mTexture;
 
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		mBlur.vblur->Bind();
+		CLEAR_COLOR(0.f, 0.f, 0.f);
+		SetVerticalBlur();
+		Draw(FALSE);
+		mBlur.vblur->Unbind();
 
-	mVertexBuffer->Unbind();
-	mProgram->Unbind();
+
+		SetTexture(mBlur.vblur->GetBuffer(FBO_COLOR));
+		mBlur.hblur->Bind();
+		CLEAR_COLOR(0.f, 0.f, 0.f);
+		SetHorizontalBlur();
+		Draw(FALSE);
+		mBlur.hblur->Unbind();
+
+		CLEAR_COLOR(0.f, 0.f, 0.f);
+		mProgram->SetUniform4f("U_Option", 0.f, 1.f, mAlphaMap > 0 ? 1.f : 0.f, 0.f);
+		SetTexture(mBlur.hblur->GetBuffer(FBO_COLOR));
+		Draw(FALSE);
+
+		mTexture = mLastTexture;
+		mProgram->SetUniform4f("U_Option", 0.f, 0.f, 0.f, 0.f);
+	}
 }
 
 
@@ -54,7 +125,7 @@ void FullScreenQuad::SetTexture(UINT texture)
 
 void FullScreenQuad::SetTexture(UCHAR * texture, INT width, INT height, GLenum format)
 {
-	if (mTexture == -1)
+	if (mTexture <= 0)
 		mTexture = CreateTexture2D(texture, width, height, format);
 	else
 	{
@@ -62,6 +133,11 @@ void FullScreenQuad::SetTexture(UCHAR * texture, INT width, INT height, GLenum f
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, texture);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+}
+
+void FullScreenQuad::SetAlphaMap(UINT texture)
+{
+	mAlphaMap = texture;
 }
 
 void FullScreenQuad::Move(FLOAT x, FLOAT y, ScreenLocation location)
@@ -153,6 +229,16 @@ void FullScreenQuad::Reset(ScreenLocation location)
 {
 	mPos = { 0.0f, 0.0f };
 	Set(location);
+}
+
+void FullScreenQuad::SetHorizontalBlur()
+{
+	mProgram->SetUniform4f("U_Option", 1.f, 0.f, 0.f, 0.f);
+}
+
+void FullScreenQuad::SetVerticalBlur()
+{
+	mProgram->SetUniform4f("U_Option", 0.f, 1.f, 0.f, 0.f);
 }
 
 FLOAT FullScreenQuad::GetX()

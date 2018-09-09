@@ -106,12 +106,10 @@ MainScene::Init()
 		&cam);
 
 	//TERRAIN INIT
-	terrain.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &cam,
-		"res/images/height_256x256.bmp");
+	terrain.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &cam, "res/images/height_256x256.bmp");
 	terrain.SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, "res/images/grass.bmp");
 	terrain.SetLightPos(0.0f, 10.0f, 0.0f, 0.0f);
-	*terrain.mModelMatrix = *terrain.mModelMatrix
-		* cm::rotate(45.0f, 0.0f, 1.0f, 0.0f);
+	*terrain.mModelMatrix = *terrain.mModelMatrix * cm::rotate(45.0f, 0.0f, 1.0f, 0.0f);
 	terrain.Move(-100.0f, -20.0f, -100.0f);
 	terrain.SetSize(5.0f, 50.0f, 5.0f);
 	terrain.SetSpecularMaterial(0.3f, 0.3f, 0.3f);
@@ -145,7 +143,7 @@ MainScene::Init()
 	Enemy.SetCallback(EnemyProc);
 
 	sound.Init();
-	sound.LoadAudio("res/sound/thud.ogg", &thud);
+	sound.LoadAudio("res/sound/thud.wav", &thud);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
@@ -185,6 +183,9 @@ MainScene::SetViewport(FLOAT width, FLOAT height)
 
 	fsqProg.SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, shadow.GetShadowMap());
 
+	//InitDOF("res/shader/dof_mix.vs", "res/shader/dof_mix.fs", width, height);
+
+	Start();
 }
 
 void
@@ -352,7 +353,7 @@ MainScene::EventUpdate(FLOAT s)
 void
 MainScene::Move(FLOAT x, FLOAT y, FLOAT z)
 {
-	LOG_D("MOVE x : %f, y : %f, z : %f", x, y, z);
+	//LOG_D("MOVE x : %f, y : %f, z : %f", x, y, z);
 	//cam.Move(x, y, z);
 	raven.Move(x, y, z);
 	cm::vec3 pos = raven.GetPosition();
@@ -389,7 +390,7 @@ MainScene::Draw(FLOAT s)
 	if (bShowDepth)
 	{
 		fsqProg.Bind();
-		fsq.Draw();
+		fsq.Draw(FALSE);
 		fsqProg.Unbind();
 	}
 
@@ -484,10 +485,30 @@ void MainScene::Stop()
 	SceneManager::GetInstance()->Next("WELC");
 }
 
+Terrain welc_bg;
+Unit welc_air;
+
 void
 WelcScene::Init()
 {
 	mCam.Init();
+
+	welc_bg.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &mCam);
+	welc_bg.SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, "res/images/grass.bmp");
+	welc_bg.SetLightPos(0.0f, 10.0f, 0.0f, 0.0f);
+	welc_bg.SetUniform4f("U_WaterOption", 1.f, 1.f, 0.f, 0.f);
+	*welc_bg.mModelMatrix = *terrain.mModelMatrix * cm::rotate(90.f, 0.0f, 1.0f, 0.0f);
+	welc_bg.Move(-50.f, -15.f, -50.f);
+	welc_bg.SetSize(.5f, 1.0f, .5f);
+	welc_bg.SetSpecularMaterial(0.3f, 0.3f, 0.3f);
+	welc_bg.SetFogLimit(50.0f, 400.0f);
+	welc_bg.SetFogColor(1.0f, 1.0f, 1.0f);
+
+	welc_air.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", "res/objs/raven.obj", &mCam);
+	welc_air.Move(-1.f, -1.f, -5.f);
+	welc_air.Scale(.1f, .1f, .1f);
+	welc_air.SetLightPos(0.0f, 1.0f, 0.0f);
+	welc_air.SetTexture("U_Texture", "res/images/raven.bmp");
 }
 
 void
@@ -515,7 +536,9 @@ WelcScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 		break;
 	case EVENT_MOVE:
 	{
-		mCam.Rotate(x, y, 0.0f);
+		welc_air.Rotate(x, 1.f, 0.f, 0.f);
+		welc_air.Rotate(y, 0.f, 1.f, 0.f);
+		welc_air.Rotate(x, 0.f, 0.f, 1.f);
 	}
 	break;
 	case EVENT_UP:
@@ -549,6 +572,7 @@ WelcScene::OnKey(UINT event, UCHAR chr)
 	}
 }
 
+FLOAT welc_woo;
 void
 WelcScene::Draw(FLOAT s)
 {
@@ -556,11 +580,17 @@ WelcScene::Draw(FLOAT s)
 	mCam.Update();
 
 	bm.Draw();
+
+	welc_woo += .2f * s;
+	welc_bg.SetUniform4f("U_WaterOption", 1.f, 3.1415926f + sin(welc_woo) * .2f, 10.f, 0.f);
+	glPointSize(2.f);
+	welc_bg.Draw(GL_POINTS);
+
+	welc_air.Draw();
 }
 
 void OverScene::Init()
 {
-
 	mCam.Init();
 }
 
@@ -568,8 +598,7 @@ void OverScene::SetViewport(FLOAT width, FLOAT height)
 {
 	mCam.Switch3D(40.0f, width / height);
 
-	bm.Init("res/shader/imagesprite.vs", "res/shader/imagesprite.fs", width,
-		height, "res/font/msyh.ttc");
+	bm.Init("res/shader/imagesprite.vs", "res/shader/imagesprite.fs", width, height, "res/font/msyh.ttc");
 	bm.New("res/images/earth.bmp", L"START", 0.0f, 0.0f, 100.0f, 50.0f, []()->void
 	{
 		LOG_D("START BTN Clicked");

@@ -14,7 +14,7 @@ ULONG GetTickCount();
 
 UCHAR *LoadFileContent(const CHAR *path, INT &fileSize);
 UCHAR *DecodeBMP(UCHAR *bmpFileData, INT &width, INT &height);
-UINT GetTimeElapse(UINT * time);
+FLOAT GetTimeElapse(UINT * time);
 UINT CreateTexture2D(UCHAR *pixelData, INT width, INT height, GLenum type);
 void CheckError(const char*file, const int line);
 UINT CreateTexture2DFromBMP(const CHAR *path);

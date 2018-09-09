@@ -51,7 +51,7 @@ private:
 	FT_Library mLibrary;
 	FT_Face mFace;
 
-	typedef std::pair<UINT, Char*> FontPair;
+	typedef std::map<UINT, Char*>::value_type FontPair;
 	std::map<UINT, Char*> mCharTexture;
 
 	Program * mProgram;

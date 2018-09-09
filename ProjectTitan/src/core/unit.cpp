@@ -14,7 +14,7 @@ void Unit::Init(const CHAR* vs, const CHAR* fs, const CHAR* obj, Camera* cam)
 	mProgram->Init(vs, fs, cam);
 	mModel->Init(mProgram->GetProgramId(), obj);
 
-	mProgram->SetVector4f(SHADER_MATERIAL_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f);
+	mProgram->SetUniform4f(SHADER_MATERIAL_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f);
 
 	mAmbientColor = cm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 	mDisffuseColor = cm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -34,7 +34,7 @@ void Unit::SetTexture(const CHAR* name, UINT texture)
 void Unit::SetLightPos(FLOAT x, FLOAT y, FLOAT z, FLOAT w, BOOL specular)
 {
 	mIsLight = TRUE;
-	mProgram->SetVector4f(SHADER_UNIFORM_LIGHT_POSITION, x, y, z, 0.0f);
+	mProgram->SetUniform4f(SHADER_UNIFORM_LIGHT_POSITION, x, y, z, 0.0f);
 
 	UpdateMaterial(specular);
 }
@@ -68,12 +68,12 @@ void Unit::SetSpecularMaterial(FLOAT r, FLOAT g, FLOAT b, FLOAT a)
 
 void Unit::UpdateMaterial(BOOL specular)
 {
-	mProgram->SetVector4f(SHADER_MATERIAL_AMBIENT, mAmbientColor.r, mAmbientColor.g, mAmbientColor.b, mAmbientColor.a);
-	mProgram->SetVector4f(SHADER_MATERIAL_DIFFUSE, mDisffuseColor.r, mDisffuseColor.g, mDisffuseColor.b, mDisffuseColor.a);
+	mProgram->SetUniform4f(SHADER_MATERIAL_AMBIENT, mAmbientColor.r, mAmbientColor.g, mAmbientColor.b, mAmbientColor.a);
+	mProgram->SetUniform4f(SHADER_MATERIAL_DIFFUSE, mDisffuseColor.r, mDisffuseColor.g, mDisffuseColor.b, mDisffuseColor.a);
 	if (specular)
-		mProgram->SetVector4f(SHADER_MATERIAL_SPECULAR, mSpecularColor.r, mSpecularColor.g, mSpecularColor.b, mSpecularColor.a);
+		mProgram->SetUniform4f(SHADER_MATERIAL_SPECULAR, mSpecularColor.r, mSpecularColor.g, mSpecularColor.b, mSpecularColor.a);
 	else
-		mProgram->SetVector4f(SHADER_MATERIAL_SPECULAR, 0.0f, 0.0f, 0.0f, 1.0f);
+		mProgram->SetUniform4f(SHADER_MATERIAL_SPECULAR, 0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void Unit::ShadowInit(Camera * shadowCam, UINT shadowMap)
@@ -144,7 +144,7 @@ void Unit::Draw()
 	if (mIsLight)
 	{
 		Camera* cam = mProgram->GetCamera();
-		mProgram->SetVector4f(SHADER_UNIFORM_CAMERA_POSITION, cam->mEye.x, cam->mEye.y, cam->mEye.z, 1.0f);
+		mProgram->SetUniform4f(SHADER_UNIFORM_CAMERA_POSITION, cam->mEye.x, cam->mEye.y, cam->mEye.z, 1.0f);
 	}
 	if (mShadow)
 	{

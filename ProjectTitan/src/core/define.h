@@ -11,6 +11,14 @@
 
 #elif _WIN32
 //if use glew static library, define GLEW_STATIC
+#ifndef GLEW_STATIC
+#define GLEW_STATIC
+#endif
+
+#ifndef UNICODE
+#define UNICODE
+#endif
+
 #include <GL/glew.h>
 #include <GL/wglew.h>
 
@@ -37,6 +45,9 @@
 #include <unordered_map>
 #include <sstream>
 #include <ctime>
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "math/cmath.hpp"
 
@@ -101,7 +112,9 @@
 #define SHADER_UNIFORM_FOG_LIMIT "U_FogLimit"
 
 #define SHADER_SAMPLER2D_MAIN_TEXTURE "U_Texture"
+#define SHADER_SAMPLER2D_BACKGROUND_TEXTURE "U_BackgroundTexture"
 #define SHADER_SAMPLER2D_SHADOW_TEXTURE "U_ShadowMap"
+#define SHADER_SAMPLER2D_ALPHA_TEXTURE "U_AlphaMap"
 
 #define SHADER_MATERIAL_AMBIENT "U_AmbientMaterial"
 #define SHADER_MATERIAL_DIFFUSE "U_DiffuseMaterial"
@@ -113,39 +126,22 @@
 #define DEPTH_TEST_BEGIN glEnable(GL_DEPTH_TEST)
 #define DEPTH_TEST_END	glDisable(GL_DEPTH_TEST)
 
-#define EVENT_UP			0x1101
-#define EVENT_MOVE			0x1102
-#define EVENT_DOWN			0x1103
+#define EVENT_UP		0x1101
+#define EVENT_MOVE		0x1102
+#define EVENT_DOWN		0x1103
 
 // CAMERA CONFIG
 #define MOVE_RATIO 6.0f
-//
-//namespace
-//{
-//
-//	typedef struct Point
-//	{
-//		INT x, y;
-//	};
-//
 
-//
-//	typedef struct Rect
-//	{
-//		INT left, top, right, bottom;
-//	};
-//
-//	typedef struct Rectf
-//	{
-//		FLOAT left, top, right, bottom;
-//	};
-//}
+// AUDIO FILE TYPE
+#define LOAD_FILE_TYPE 	WAV_FILE
+
 typedef struct tagPointf
 {
-  FLOAT x, y;
+	FLOAT x, y;
 } Pointf;
 typedef struct tagRectf
 {
-  FLOAT left, top, right, bottom;
+	FLOAT left, top, right, bottom;
 } Rectf;
 #endif

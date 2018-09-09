@@ -440,7 +440,7 @@ void ModelEmit::Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CH
 {
 	mProgram = new Program;
 	mProgram->Init(vs, fs, camera);
-	mProgram->SetVector4f(SHADER_MATERIAL_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f);
+	mProgram->SetUniform4f(SHADER_MATERIAL_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f);
 
 	mSampleModel = new Model;
 	mSampleModel->Init(mProgram->GetProgramId(), modelPath);
@@ -539,13 +539,13 @@ void ModelEmit::SetEmitDirection(FLOAT x, FLOAT y, FLOAT z)
 
 void ModelEmit::SetLightPosition(FLOAT x, FLOAT y, FLOAT z, BOOL specular)
 {
-	mProgram->SetVector4f(SHADER_MATERIAL_AMBIENT, 0.2f, 0.2f, 0.2f, 1.0f);
-	mProgram->SetVector4f(SHADER_MATERIAL_DIFFUSE, 0.6f, 0.6f, 0.6f, 1.0f);
+	mProgram->SetUniform4f(SHADER_MATERIAL_AMBIENT, 0.2f, 0.2f, 0.2f, 1.0f);
+	mProgram->SetUniform4f(SHADER_MATERIAL_DIFFUSE, 0.6f, 0.6f, 0.6f, 1.0f);
 	if(specular)
-		mProgram->SetVector4f(SHADER_MATERIAL_AMBIENT, 0.0f, 0.0f, 0.0f, 1.0f);
+		mProgram->SetUniform4f(SHADER_MATERIAL_AMBIENT, 0.0f, 0.0f, 0.0f, 1.0f);
 	else
-		mProgram->SetVector4f(SHADER_MATERIAL_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f);
-	mProgram->SetVector4f(SHADER_UNIFORM_LIGHT_POSITION, x, y, z, 0.0f);
+		mProgram->SetUniform4f(SHADER_MATERIAL_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f);
+	mProgram->SetUniform4f(SHADER_UNIFORM_LIGHT_POSITION, x, y, z, 0.0f);
 }
 
 void ModelEmit::Move(FLOAT x, FLOAT y, FLOAT z)
@@ -600,7 +600,7 @@ void ModelEmit::Emit(FLOAT x, FLOAT y, FLOAT z)
 void ModelEmit::Draw()
 {
 	cm::vec3 pos = mProgram->GetCamera()->mEye;
-	mProgram->SetVector4f(SHADER_UNIFORM_CAMERA_POSITION, pos.x, pos.y, pos.z, 0.0f);
+	mProgram->SetUniform4f(SHADER_UNIFORM_CAMERA_POSITION, pos.x, pos.y, pos.z, 0.0f);
 	mProgram->Bind();
 	for (UINT i = 0; i < mModels.size(); ++i)
 	{

@@ -236,7 +236,7 @@ void Skybox::Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CHAR 
 {
 	mProgram = new Program;
 	mProgram->Init(vs, fs, camera);
-	mProgram->SetVector4f(SHADER_MATERIAL_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f);
+	mProgram->SetUniform4f(SHADER_MATERIAL_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f);
 
 	mCamera = camera;
 

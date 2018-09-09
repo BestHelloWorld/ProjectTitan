@@ -129,26 +129,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="res\shader\blin_shadow.fs" />
-    <None Include="res\shader\blin_shadow.vs" />
-    <None Include="res\shader\f.fs" />
-    <None Include="res\shader\fog.fs" />
-    <None Include="res\shader\fog.vs" />
-    <None Include="res\shader\fullscreenquad.fs" />
-    <None Include="res\shader\fullscreenquad.vs" />
-    <None Include="res\shader\imagesprite.fs" />
-    <None Include="res\shader\imagesprite.vs" />
-    <None Include="res\shader\pointsprite.fs" />
-    <None Include="res\shader\pointsprite.vs" />
-    <None Include="res\shader\point_light.fs" />
-    <None Include="res\shader\point_light.vs" />
-    <None Include="res\shader\skybox.fs" />
-    <None Include="res\shader\skybox.vs" />
-    <None Include="res\shader\spot_light.fs" />
-    <None Include="res\shader\spot_light.vs" />
-    <None Include="res\shader\v.vs" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="src\core\animation.h" />
     <ClInclude Include="src\core\buttons.h" />
     <ClInclude Include="src\core\camera.h" />
@@ -213,7 +193,6 @@
     <ClInclude Include="src\demo.h" />
     <ClInclude Include="src\opengltest.h" />
     <ClInclude Include="src\utaircraft.h" />
-    <ClInclude Include="src\utterrain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\animation.cpp" />
@@ -260,7 +239,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\opengltest.cpp" />
     <ClCompile Include="src\utaircraft.cpp" />
-    <ClCompile Include="src\utterrain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

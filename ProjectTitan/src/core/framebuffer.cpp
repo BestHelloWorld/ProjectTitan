@@ -16,7 +16,7 @@ void FrameBuffer::AttachColorBuffer(const CHAR *bufferName, GLenum attachment, I
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	mDrawBuffers.push_back(attachment);
-	mBufferTextures.insert(std::pair<std::string, UINT>(bufferName, colorBuffer));
+	mBufferTextures.insert(std::map<std::string, UINT>::value_type(bufferName, colorBuffer));
 	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, colorBuffer, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -32,7 +32,7 @@ void FrameBuffer::AttachDepthBuffer(const CHAR *bufferName, INT width, INT heigh
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	mBufferTextures.insert(std::pair<std::string, UINT>(bufferName, depthBuffer));
+	mBufferTextures.insert(std::map<std::string, UINT>::value_type(bufferName, depthBuffer));
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBuffer, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

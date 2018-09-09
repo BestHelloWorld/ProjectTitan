@@ -30,9 +30,8 @@ void main()
 	vec4 newNormal = normal;
 	if(U_WaterOption.x != 0.0)
 	{
-		newPos.y = sin(newPos.x + U_WaterOption.y) * U_WaterOption.x + U_WaterOption.z;
-		V_Normal.x = (sin(newPos.x - 0.5 + U_WaterOption.y) * U_WaterOption.x) - 
-						(sin(newPos.x + 0.5 + U_WaterOption.y) * U_WaterOption.x);
+		newPos.y = sin(newPos.x * U_WaterOption.y) * U_WaterOption.x + U_WaterOption.z;
+		V_Normal.x = (sin(newPos.x - 0.5 + U_WaterOption.y) * U_WaterOption.x) - (sin(newPos.x + 0.5 + U_WaterOption.y) * U_WaterOption.x);
 		V_Normal.y = 2.0;
 		V_Normal.z = 0.0;
 		V_Normal = normalize(V_Normal);

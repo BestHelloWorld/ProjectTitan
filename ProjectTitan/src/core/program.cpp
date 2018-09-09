@@ -162,7 +162,7 @@ UINT Program::SetTexture(const CHAR *name, const CHAR *path)
 			UniformTexture *t = new UniformTexture;
 			t->location = location;
 			t->texture = CreateTexture2DFromBMP(path);
-			mUniformTextures.insert(std::pair<std::string, UniformTexture *>(name, t));
+			mUniformTextures.insert(std::map<std::string, UniformTexture *>::value_type(name, t));
 			texture = t->texture;
 		}
 	}
@@ -192,7 +192,7 @@ UINT Program::SetTexture(const CHAR *name, UINT texture)
 			UniformTexture *t = new UniformTexture;
 			t->location = location;
 			t->texture = texture;
-			mUniformTextures.insert(std::pair<std::string, UniformTexture *>(name, t));
+			mUniformTextures.insert(std::map<std::string, UniformTexture *>::value_type(name, t));
 		}
 	}
 	else
@@ -215,7 +215,7 @@ UINT Program::SetTextureCube(const CHAR *name, UINT texture)
 			UniformTextureCube *t = new UniformTextureCube;
 			t->location = location;
 			t->texture = texture;
-			mUniformTextureCubes.insert(std::pair<std::string, UniformTextureCube *>(name, t));
+			mUniformTextureCubes.insert(std::map<std::string, UniformTextureCube *>::value_type(name, t));
 		}
 	}
 	else
@@ -241,7 +241,7 @@ void Program::SetFogColor(FLOAT r, FLOAT g, FLOAT b, FLOAT a)
 	mFogColor.a = a;
 }
 
-void Program::SetVector4f(const CHAR *name, FLOAT x, FLOAT y, FLOAT z, FLOAT w)
+void Program::SetUniform4f(const CHAR *name, FLOAT x, FLOAT y, FLOAT z, FLOAT w)
 {
 	auto iter = mUniformVectors.find(name);
 	if (iter == mUniformVectors.end())
@@ -255,7 +255,7 @@ void Program::SetVector4f(const CHAR *name, FLOAT x, FLOAT y, FLOAT z, FLOAT w)
 			v->v[1] = y;
 			v->v[2] = z;
 			v->v[3] = w;
-			mUniformVectors.insert(std::pair<std::string, UniformVector4f *>(name, v));
+			mUniformVectors.insert(std::map<std::string, UniformVector4f *>::value_type(name, v));
 		}
 	}
 	else

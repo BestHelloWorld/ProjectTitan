@@ -3,6 +3,10 @@
 
 #include "define.h"
 
+class Program;
+class FrameBuffer;
+class SceneManager;
+class FullScreenQuad;
 
 class Scene
 {
@@ -15,13 +19,24 @@ public:
 	virtual void OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y);
 	virtual void OnKey(UINT event, UCHAR chr);
 	virtual void Draw(FLOAT s);
+
+	void InitDOF(const CHAR * mix_vs, const CHAR * mix_fs, INT width, INT height);
+	SceneManager * GetSceneManager();
+
+	void _setSceneManager(SceneManager * sm);
+
+private:
+	SceneManager * mCurrentSM;
 };
 
-class Program;
-class FrameBuffer;
-class FullScreenQuad;
 
 #define TRANSITION_TIME 1.0f
+
+typedef struct tagDOF
+{
+	FrameBuffer * mFbo;
+	FullScreenQuad * mDOF_fullScreen;
+}DOF;
 
 class SceneManager
 {
@@ -63,7 +78,7 @@ private:
 
 	SceneManager();
 	static SceneManager * mManager;
-
+	static DOF * mDOF;
 };
 
 

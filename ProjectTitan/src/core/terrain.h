@@ -19,13 +19,16 @@ public:
 
 	virtual void Init(const CHAR * vs, const CHAR * fs, Camera * camera, const CHAR* path = 0);
 	virtual void InitVAO();
-	virtual void Draw();
+	virtual void Draw(GLenum draw_type = GL_TRIANGLES);
 	virtual void Release();
 
 	void SetPosition(FLOAT x, FLOAT y, FLOAT z);
 	void Move(FLOAT x, FLOAT y, FLOAT z);
 	void SetHeightMap(const CHAR* path);
 	void SetSize(FLOAT x, FLOAT y, FLOAT z);
+
+	// OPTION
+	void SetUniform4f(const CHAR * uniform, FLOAT x, FLOAT y, FLOAT z, FLOAT w);
 
 	// LIGHT
 	void SetLightPos(FLOAT x, FLOAT y, FLOAT z, FLOAT w = 0.0f, BOOL specular = TRUE);
