@@ -126,6 +126,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShow
 	UpdateWindow(hWnd);
 
 	Init();
+
 	SetViewportSize(1024, 762);
 
 	MSG msg =

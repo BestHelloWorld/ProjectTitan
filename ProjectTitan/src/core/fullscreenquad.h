@@ -29,9 +29,11 @@ public:
 	void SetTexture(UCHAR * texture, INT width, INT height, GLenum format = GL_RGB);
 	void SetAlphaMap(UINT texture);
 
-	void Move(FLOAT x, FLOAT y, ScreenLocation location);
+	void Move(FLOAT x, FLOAT y, FLOAT z, ScreenLocation location);
 	void Set(ScreenLocation location);
+	void SetLocation(ScreenLocation location);
 	void Reset(ScreenLocation location);
+	void LoadIdentity();
 
 	void SetHorizontalBlur();
 	void SetVerticalBlur();
@@ -40,10 +42,12 @@ public:
 
 	FLOAT GetX();
 	FLOAT GetY();
+	FLOAT GetZ();
 
 
 public:
 	Program * mProgram;
+	ScreenLocation mScreenLocation;
 private:
 	VertexBuffer * mVertexBuffer;
 
@@ -57,6 +61,7 @@ private:
 	{
 		FLOAT x;
 		FLOAT y;
+		FLOAT z;
 	}POSITION;
 	POSITION mPos;
 
@@ -67,6 +72,7 @@ private:
 		bool isBlur = FALSE;
 	}BLUR;
 	BLUR mBlur;
+
 };
 
 #endif

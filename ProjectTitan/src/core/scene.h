@@ -20,11 +20,14 @@ public:
 	virtual void OnKey(UINT event, UCHAR chr);
 	virtual void Draw(FLOAT s);
 
-	void InitDOF(const CHAR * mix_vs, const CHAR * mix_fs, INT width, INT height);
+	void InitDOF(UINT texture);
 	SceneManager * GetSceneManager();
 
 	void _setSceneManager(SceneManager * sm);
 
+public:
+	UINT mDOFTexture;
+	BOOL mIsOpenDOF = FALSE;
 private:
 	SceneManager * mCurrentSM;
 };
@@ -57,6 +60,8 @@ public:
 	BOOL Erase(const CHAR * sceneName);
 	void Next(const CHAR * sceneName);
 
+	void SetScene(const CHAR * sceneName);
+
 	Scene * GetScene(const CHAR * sceneName);
 
 	UCHAR * CaptureScene();
@@ -70,7 +75,7 @@ public:
 
 	Program * mFboProg;
 	FullScreenQuad * mMainFullQuad, * mSubFullQuad;
-	FrameBuffer * mMainFbo, * mSubFbo;
+	FrameBuffer * mMainFbo, * mSubFbo, * mBufFbo;
 	FLOAT mViewportWidth, mViewportHeight;
 
 	FLOAT mTransitionTime;

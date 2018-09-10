@@ -20,6 +20,8 @@ void FullScreenQuad::Init(ScreenLocation location)
 
 	mPosLoc = glGetAttribLocation(mProgram->GetProgramId(), "position");
 	mTexcLoc = glGetAttribLocation(mProgram->GetProgramId(), "texcoord");
+
+	mScreenLocation = FULL_SCREEN;
 	//mUTextLoc = glGetUniformLocation(mProgram->GetProgramId(), "U_Texture");
 }
 
@@ -37,6 +39,8 @@ void FullScreenQuad::Init(const CHAR * vs, const CHAR * fs, ScreenLocation locat
 
 	mPosLoc = glGetAttribLocation(mProgram->GetProgramId(), "position");
 	mTexcLoc = glGetAttribLocation(mProgram->GetProgramId(), "texcoord");
+
+	mScreenLocation = FULL_SCREEN;
 }
 
 void FullScreenQuad::InitBlur(INT width, INT height, ScreenLocation location)
@@ -56,6 +60,8 @@ void FullScreenQuad::InitBlur(INT width, INT height, ScreenLocation location)
 
 void FullScreenQuad::Draw(BOOL is_drawBlur)
 {
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	if (!is_drawBlur)
 	{
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -140,11 +146,13 @@ void FullScreenQuad::SetAlphaMap(UINT texture)
 	mAlphaMap = texture;
 }
 
-void FullScreenQuad::Move(FLOAT x, FLOAT y, ScreenLocation location)
+void FullScreenQuad::Move(FLOAT x, FLOAT y, FLOAT z, ScreenLocation location)
 {
 	mPos.x += x;
 	mPos.y += y;
-	Set(location);
+	mPos.z += z;
+	mScreenLocation = location;
+	Set(mScreenLocation);
 }
 
 void FullScreenQuad::Set(ScreenLocation location)
@@ -160,10 +168,10 @@ void FullScreenQuad::Set(ScreenLocation location)
 		mVertexBuffer->SetTexcoord(2, 1.0f, 0.0f);
 		mVertexBuffer->SetTexcoord(3, 1.0f, 1.0f);
 
-		mVertexBuffer->SetPosition(0, mPos.x + -1.0f, mPos.y + 1.0f, 0.0f);
-		mVertexBuffer->SetPosition(1, mPos.x + -1.0f, mPos.y + 0.0f, 0.0f);
-		mVertexBuffer->SetPosition(2, mPos.x + 0.0f, mPos.y + 0.0f, 0.0f);
-		mVertexBuffer->SetPosition(3, mPos.x + 0.0f, mPos.y + 1.0f, 0.0f);
+		mVertexBuffer->SetPosition(0, mPos.x + -1.0f, mPos.y + 1.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(1, mPos.x + -1.0f, mPos.y + 0.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(2, mPos.x + 0.0f, mPos.y + 0.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(3, mPos.x + 0.0f, mPos.y + 1.0f, mPos.z + 0.0f);
 
 		break;
 	case LEFT_BOTTOM_SCREEN:
@@ -173,10 +181,10 @@ void FullScreenQuad::Set(ScreenLocation location)
 		mVertexBuffer->SetTexcoord(2, 1.0f, 0.0f);
 		mVertexBuffer->SetTexcoord(3, 1.0f, 1.0f);
 
-		mVertexBuffer->SetPosition(0, mPos.x + -1.0f, mPos.y + 0.0f, 0.0f);
-		mVertexBuffer->SetPosition(1, mPos.x + -1.0f, mPos.y + -1.0f, 0.0f);
-		mVertexBuffer->SetPosition(2, mPos.x + 0.0f, mPos.y + -1.0f, 0.0f);
-		mVertexBuffer->SetPosition(3, mPos.x + 0.0f, mPos.y + 0.0f, 0.0f);
+		mVertexBuffer->SetPosition(0, mPos.x + -1.0f, mPos.y + 0.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(1, mPos.x + -1.0f, mPos.y + -1.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(2, mPos.x + 0.0f, mPos.y + -1.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(3, mPos.x + 0.0f, mPos.y + 0.0f, mPos.z + 0.0f);
 
 		break;
 	case RIGHT_TOP_SCREEN:
@@ -186,10 +194,10 @@ void FullScreenQuad::Set(ScreenLocation location)
 		mVertexBuffer->SetTexcoord(2, 1.0f, 0.0f);
 		mVertexBuffer->SetTexcoord(3, 1.0f, 1.0f);
 
-		mVertexBuffer->SetPosition(0, mPos.x + 0.0f, mPos.y + 1.0f, 0.0f);
-		mVertexBuffer->SetPosition(1, mPos.x + 0.0f, mPos.y + 0.0f, 0.0f);
-		mVertexBuffer->SetPosition(2, mPos.x + 1.0f, mPos.y + 0.0f, 0.0f);
-		mVertexBuffer->SetPosition(3, mPos.x + 1.0f, mPos.y + 1.0f, 0.0f);
+		mVertexBuffer->SetPosition(0, mPos.x + 0.0f, mPos.y + 1.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(1, mPos.x + 0.0f, mPos.y + 0.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(2, mPos.x + 1.0f, mPos.y + 0.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(3, mPos.x + 1.0f, mPos.y + 1.0f, mPos.z + 0.0f);
 
 		break;
 	case RIGHT_BOTTOM_SCREEN:
@@ -199,10 +207,10 @@ void FullScreenQuad::Set(ScreenLocation location)
 		mVertexBuffer->SetTexcoord(2, 1.0f, 0.0f);
 		mVertexBuffer->SetTexcoord(3, 1.0f, 1.0f);
 
-		mVertexBuffer->SetPosition(0, mPos.x + 0.0f, mPos.y + 0.0f, 0.0f);
-		mVertexBuffer->SetPosition(1, mPos.x + 0.0f, mPos.y + -1.0f, 0.0f);
-		mVertexBuffer->SetPosition(2, mPos.x + 1.0f, mPos.y + -1.0f, 0.0f);
-		mVertexBuffer->SetPosition(3, mPos.x + 1.0f, mPos.y + 0.0f, 0.0f);
+		mVertexBuffer->SetPosition(0, mPos.x + 0.0f, mPos.y + 0.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(1, mPos.x + 0.0f, mPos.y + -1.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(2, mPos.x + 1.0f, mPos.y + -1.0f, mPos.z + 0.0f);
+		mVertexBuffer->SetPosition(3, mPos.x + 1.0f, mPos.y + 0.0f, mPos.z + 0.0f);
 
 		break;
 	case FULL_SCREEN:
@@ -213,10 +221,10 @@ void FullScreenQuad::Set(ScreenLocation location)
 		mVertexBuffer->SetTexcoord(2, 1.0f, 0.0f);
 		mVertexBuffer->SetTexcoord(3, 1.0f, 1.0f);
 
-		mVertexBuffer->SetPosition(0, mPos.x + -1.0f, mPos.y + 1.0f, -1.0f);
-		mVertexBuffer->SetPosition(1, mPos.x + -1.0f, mPos.y + -1.0f, -1.0f);
-		mVertexBuffer->SetPosition(2, mPos.x + 1.0f, mPos.y + -1.0f, -1.0f);
-		mVertexBuffer->SetPosition(3, mPos.x + 1.0f, mPos.y + 1.0f, -1.0f);
+		mVertexBuffer->SetPosition(0, mPos.x + -1.0f, mPos.y + 1.0f, mPos.z + -1.0f);
+		mVertexBuffer->SetPosition(1, mPos.x + -1.0f, mPos.y + -1.0f, mPos.z + -1.0f);
+		mVertexBuffer->SetPosition(2, mPos.x + 1.0f, mPos.y + -1.0f, mPos.z + -1.0f);
+		mVertexBuffer->SetPosition(3, mPos.x + 1.0f, mPos.y + 1.0f, mPos.z + -1.0f);
 
 		break;
 	}
@@ -227,8 +235,15 @@ void FullScreenQuad::Set(ScreenLocation location)
 
 void FullScreenQuad::Reset(ScreenLocation location)
 {
-	mPos = { 0.0f, 0.0f };
-	Set(location);
+	mPos = { 0.f, 0.f, 0.f };
+	mScreenLocation = location;
+	Set(mScreenLocation);
+}
+
+void FullScreenQuad::LoadIdentity()
+{
+	mPos = { 0.f, 0.f, 0.f };
+	Set(mScreenLocation);
 }
 
 void FullScreenQuad::SetHorizontalBlur()
@@ -249,4 +264,9 @@ FLOAT FullScreenQuad::GetX()
 FLOAT FullScreenQuad::GetY()
 {
 	return mPos.y;
+}
+
+FLOAT FullScreenQuad::GetZ()
+{
+	return mPos.z;
 }

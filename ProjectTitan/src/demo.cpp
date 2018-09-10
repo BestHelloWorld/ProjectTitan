@@ -299,7 +299,7 @@ MainScene::OnKey(UINT event, UCHAR chr)
 
 			LOG_D("%d, %d, %d", buf[0], buf[1], buf[2]);
 			fsq.SetTexture(buf, gWidth, gHeight);
-			fsq.Move(-0.1f, 0.0f, RIGHT_TOP_SCREEN);
+			fsq.Move(0.f, 0.f, 0.f, RIGHT_TOP_SCREEN);
 
 			delete buf;
 			break;
@@ -403,7 +403,7 @@ MainScene::Draw(FLOAT s)
 
 	// TEST
 
-	// Calculate Frames Per Second
+	// DRAW FONT
 	BLEND_BEGIN;
 	currentMS += s;
 	framesPerSecond++;
@@ -442,7 +442,6 @@ MainScene::Draw(FLOAT s)
 
 	if (isGameover)
 	{
-
 		swprintf(str, 120, L"Game Over, Press any key continue.\0");
 		tb->Draw(str, -100.0f, 0.0f);
 	}
@@ -514,7 +513,7 @@ WelcScene::Init()
 void
 WelcScene::SetViewport(FLOAT width, FLOAT height)
 {
-	mCam.Switch3D(40.0f, width / height);
+	mCam.Switch3D(45.0f, width / height);
 
 	bm.Init("res/shader/imagesprite.vs", "res/shader/imagesprite.fs", width,
 		height, "res/font/msyh.ttc");
@@ -536,9 +535,8 @@ WelcScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 		break;
 	case EVENT_MOVE:
 	{
-		welc_air.Rotate(x, 1.f, 0.f, 0.f);
-		welc_air.Rotate(y, 0.f, 1.f, 0.f);
-		welc_air.Rotate(x, 0.f, 0.f, 1.f);
+		welc_air.Rotate(x, 0.f, 1.f, 0.f);
+		welc_air.Rotate(y, 1.f, 0.f, 0.f);
 	}
 	break;
 	case EVENT_UP:
@@ -562,6 +560,9 @@ WelcScene::OnKey(UINT event, UCHAR chr)
 		case 'B':
 			SceneManager::GetInstance()->Next("MAIN");
 			((MainScene*)SceneManager::GetInstance()->GetScene("MAIN"))->Start();
+			break;
+		case 'D':
+			InitDOF(1);
 			break;
 		default:
 			break;
