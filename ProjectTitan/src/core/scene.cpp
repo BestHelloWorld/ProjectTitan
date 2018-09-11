@@ -143,7 +143,7 @@ void SceneManager::SetViewport(FLOAT width, FLOAT height)
 
 	mMainFullQuad->SetTexture(mMainFbo->GetBuffer(FBO_COLOR));
 
-	mMainFullQuad->InitBlur(width, height, FULL_SCREEN);
+	mMainFullQuad->InitBlur((INT)width, (INT)height, FULL_SCREEN);
 
 	mViewportWidth = width;
 	mViewportHeight = height;

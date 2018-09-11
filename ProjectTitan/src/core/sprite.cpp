@@ -53,25 +53,25 @@ void ImageSprite::InitVAO()
 	if (location >= 0)
 	{
 		glEnableVertexAttribArray(location);
-		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)((Vertex *)0)->Position);
+		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)OFFSETOF(Vertex, Position));
 	}
 	location = glGetAttribLocation(mProgram, SHADER_ATTRIB_TEXCOORD);
 	if (location >= 0)
 	{
 		glEnableVertexAttribArray(location);
-		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)((Vertex *)0)->Texcoord);
+		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)OFFSETOF(Vertex, Texcoord));
 	}
 	location = glGetAttribLocation(mProgram, SHADER_ATTRIB_NORMAL);
 	if (location >= 0)
 	{
 		glEnableVertexAttribArray(location);
-		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)((Vertex *)0)->Normal);
+		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)OFFSETOF(Vertex, Normal));
 	}
 	location = glGetAttribLocation(mProgram, SHADER_ATTRIB_COLOR);
 	if (location >= 0)
 	{
 		glEnableVertexAttribArray(location);
-		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)((Vertex *)0)->Color);
+		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)OFFSETOF(Vertex, Color));
 	}
 
 	mVertexBuffer.Unbind();

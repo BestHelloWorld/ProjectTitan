@@ -340,7 +340,7 @@ void Skybox::Draw()
 	if (location >= 0)
 	{
 		glEnableVertexAttribArray(location);
-		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), ((Vertex*)0)->Position);
+		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)OFFSETOF(Vertex, Position));
 	}
 
 	mVBO->Unbind();

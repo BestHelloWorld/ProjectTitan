@@ -18,6 +18,9 @@
 #ifndef UNICODE
 #define UNICODE
 #endif
+#ifndef _UNICODE
+#define _UNICODE
+#endif
 
 #include <GL/glew.h>
 #include <GL/wglew.h>
@@ -66,6 +69,8 @@
 
 #define LWORD(i)		i & 0xFFFF
 #define HWORD(i)		i >> 16 & 0xFFFF
+
+#define OFFSETOF(obj, mem) (int)(((obj*)0)->mem)
 
 #define RAD(x)			x*3.1415926f/180.0f
 #define POW_2(x)		pow(x, 2)

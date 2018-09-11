@@ -70,8 +70,8 @@ void FullScreenQuad::Draw(BOOL is_drawBlur)
 
 		glEnableVertexAttribArray(mPosLoc);
 		glEnableVertexAttribArray(mTexcLoc);
-		glVertexAttribPointer(mPosLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)((Vertex*)0)->Position);
-		glVertexAttribPointer(mTexcLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)((Vertex*)0)->Texcoord);
+		glVertexAttribPointer(mPosLoc, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)OFFSETOF(Vertex, Position));
+		glVertexAttribPointer(mTexcLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)OFFSETOF(Vertex, Texcoord));
 
 		UINT location = glGetUniformLocation(mProgram->GetProgramId(), SHADER_SAMPLER2D_MAIN_TEXTURE);
 		if (location >= 0 && mTexture > 0)

@@ -223,13 +223,13 @@ void TextBitmap::DrawBitmap(UINT texture, INT vbo)
 	if (location >= 0)
 	{
 		glEnableVertexAttribArray(location);
-		glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)((Vertex*)0)->Position);
+		glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)OFFSETOF(Vertex, Position));
 	}
 	location = glGetAttribLocation(mProgram->GetProgramId(), SHADER_ATTRIB_TEXCOORD);
 	if (location >= 0)
 	{
 		glEnableVertexAttribArray(location);
-		glVertexAttribPointer(location, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)((Vertex*)0)->Texcoord);
+		glVertexAttribPointer(location, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)OFFSETOF(Vertex, Texcoord));
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
