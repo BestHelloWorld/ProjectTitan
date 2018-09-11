@@ -3,6 +3,9 @@
 #include "utils.h"
 #include "model.h"
 
+
+#define _SHADER_COMPILE_LOG_BUF_SIZE	2048
+
 UINT Program::CompileShader(GLenum shaderType, const CHAR *shaderCode)
 {
 	GLuint shader = 0;
@@ -14,9 +17,9 @@ UINT Program::CompileShader(GLenum shaderType, const CHAR *shaderCode)
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compileRes);
 	if (compileRes == GL_FALSE)
 	{
-		char *buf = new char[1024]{ 0 };
+		char *buf = new char[_SHADER_COMPILE_LOG_BUF_SIZE]{ 0 };
 		int len;
-		glGetShaderInfoLog(shader, 1023, &len, buf);
+		glGetShaderInfoLog(shader, _SHADER_COMPILE_LOG_BUF_SIZE - 1, &len, buf);
 		if (len > 0)
 		{
 			LOG_E("Shader Compile failed : %s\n%s", buf, shaderCode);

@@ -5,6 +5,8 @@
 #include "fullscreenquad.h"
 #include "camera.h"
 
+#define _MAX_MOVE_LEFT		-1.0f
+#define _MAX_MOVE_RIGHT		1.0f
 
 Scene::Scene() :
 	mCurrentSM(NULL),
@@ -103,8 +105,8 @@ void SceneManager::InitScenes()
 	mSubFbo = new FrameBuffer;
 	mSubFbo->Init();
 
-	mBufFbo = new FrameBuffer;
-	mBufFbo->Init();
+	//mBufFbo = new FrameBuffer;
+	//mBufFbo->Init();
 
 	mMainFullQuad = new FullScreenQuad;
 	mMainFullQuad->Init();
@@ -135,9 +137,9 @@ void SceneManager::SetViewport(FLOAT width, FLOAT height)
 	//mSubFbo->AttachDepthBuffer(FBO_DEPTH, (INT)width, (INT)height);
 	mSubFbo->AttachFinish();
 
-	mBufFbo->AttachColorBuffer(FBO_COLOR, GL_COLOR_ATTACHMENT0, (INT)width, (INT)height);
-	mBufFbo->AttachDepthBuffer(FBO_DEPTH, (INT)width, (INT)height);
-	mBufFbo->AttachFinish();
+	//mBufFbo->AttachColorBuffer(FBO_COLOR, GL_COLOR_ATTACHMENT0, (INT)width, (INT)height);
+	//mBufFbo->AttachDepthBuffer(FBO_DEPTH, (INT)width, (INT)height);
+	//mBufFbo->AttachFinish();
 
 	mMainFullQuad->SetTexture(mMainFbo->GetBuffer(FBO_COLOR));
 
@@ -218,11 +220,17 @@ UCHAR * SceneManager::CaptureScene()
 	return buf;
 }
 
-FLOAT total_distance = 0.f;
+FLOAT _total_distance = 0.f;
+FLOAT _real_total_distance = 0.f;
+FLOAT _check_update = 0.f;
+
 void SceneManager::_initTransition()
 {
 	mTransitionTime = 0.0f;
-	total_distance = 0.f;
+
+	_total_distance = 0.f;
+	_real_total_distance = 0.f;
+	_check_update = 2.0f;
 
 	UCHAR * buf = CaptureScene();
 	mSubFullQuad->SetTexture(buf, (INT)mViewportWidth, (INT)mViewportHeight, GL_RGB);
@@ -230,36 +238,66 @@ void SceneManager::_initTransition()
 	mSubFullQuad->Reset(FULL_SCREEN);
 
 	mMainFullQuad->Reset(FULL_SCREEN);
-	mMainFullQuad->Move(2.0f, 0.0f, 0.f, FULL_SCREEN);
+
+#if TRANSITION_STYLE == TRANSFORM_TRANSLATE
+	mMainFullQuad->Move(_check_update, 0.0f, 0.f, FULL_SCREEN);
+#endif
+
 	delete buf;
 }
 
+
 void SceneManager::_update(FLOAT elapse)
 {
-	FLOAT move_distance = elapse / 1.0f * TRANSITION_TIME;
+	FLOAT move_distance = elapse / 1.f * TRANSITION_TIME;
 
-	FLOAT C = cos(total_distance) * 2.1f;
+	FLOAT C = cos(_total_distance) * 2.1f;
 	//FLOAT C = pow(1.f - (total_distance / 2.f), 4.0f);
-	if (mMainFullQuad->GetX() > .001f)
+	if (_check_update > .001f)
 	{
-		total_distance += move_distance;
-		mMainFullQuad->Move(-move_distance*C, 0.f, 0.f, FULL_SCREEN);
-		mSubFullQuad->Move(-move_distance*C, 0.f, 0.f, FULL_SCREEN);
+		FLOAT _md = -move_distance*C;
 
-		LOG_D("mSubFullQuad :: %f, mMainFullQuad :: %f", mSubFullQuad->GetX(), mMainFullQuad->GetX());
+		_total_distance += move_distance;
+		_real_total_distance += _md;
 
+		FLOAT complete_rate = abs(_real_total_distance) * .5f;
+
+
+#if TRANSITION_STYLE == TRANSFORM_CUBE_ROTATE
+		const FLOAT MIN_SIDE = .4f;
+		FLOAT main_side = complete_rate * (1.f - MIN_SIDE) + MIN_SIDE;
+
+		mMainFullQuad->SetSide(TOP, _real_total_distance + 1.f, 1.f);
+		mMainFullQuad->SetSide(BOTTOM, _real_total_distance + 1.f, 1.f);
+		mMainFullQuad->SetSide(RIGHT, main_side * 1.f, -main_side * 1.f);
+		//mMainFullQuad->GetX() += _md;
+
+		FLOAT sub_side = (1.0f - complete_rate) * (1.0f - MIN_SIDE) + MIN_SIDE;
+		mSubFullQuad->SetSide(TOP, -1.f, _real_total_distance + 1.f);
+		mSubFullQuad->SetSide(BOTTOM, -1.f, _real_total_distance + 1.f);
+		mSubFullQuad->SetSide(LEFT, sub_side * 1.f, -sub_side * 1.f);
+#elif TRANSITION_STYLE == TRANSFORM_TRANSLATE
+		mMainFullQuad->Move(_md, 0.f, 0.f, FULL_SCREEN);
+		mSubFullQuad->Move(_md, 0.f, 0.f, FULL_SCREEN);
+#endif
+
+		LOG_D("Complete :: %f", complete_rate);
+
+		_check_update += _md;
 		mSubFullQuad->Draw(FALSE);
 	}
 	else if (mMainFullQuad->GetX())
 	{
-		total_distance = 0.f;
+		_total_distance = 0.f;
+		_real_total_distance = 0.f;
+
 		mMainFullQuad->Reset(FULL_SCREEN);
 	}
 }
 
 void SceneManager::Draw(FLOAT s)
 {
-	CLEAR_COLOR(0.1f, 0.2f, 0.4f);
+	CLEAR_COLOR(.1f, .2f, .4f);
 
 	mMainFbo->Bind();
 	if (mCurrent)

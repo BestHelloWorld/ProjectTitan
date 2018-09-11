@@ -86,7 +86,8 @@
       <AdditionalDependencies>glew32s.lib;opengl32.lib;freetype.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>editbin /subsystem:console $(OutDir)$(TargetName)$(TargetExt)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,7 +131,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\core\animation.h" />
-    <ClInclude Include="src\core\buttons.h" />
     <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="src\core\define.h" />
     <ClInclude Include="src\core\framebuffer.h" />
@@ -196,7 +196,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\animation.cpp" />
-    <ClCompile Include="src\core\buttons.cpp" />
     <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="src\core\framebuffer.cpp" />
     <ClCompile Include="src\core\fullscreenquad.cpp" />

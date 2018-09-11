@@ -8,6 +8,11 @@ class FrameBuffer;
 class SceneManager;
 class FullScreenQuad;
 
+#define TRANSFORM_TRANSLATE		0x2301
+#define TRANSFORM_CUBE_ROTATE	0x2302
+
+#define TRANSITION_STYLE		TRANSFORM_CUBE_ROTATE
+
 class Scene
 {
 public:
@@ -75,7 +80,7 @@ public:
 
 	Program * mFboProg;
 	FullScreenQuad * mMainFullQuad, * mSubFullQuad;
-	FrameBuffer * mMainFbo, * mSubFbo, * mBufFbo;
+	FrameBuffer * mMainFbo, * mSubFbo/*, * mBufFbo*/;
 	FLOAT mViewportWidth, mViewportHeight;
 
 	FLOAT mTransitionTime;

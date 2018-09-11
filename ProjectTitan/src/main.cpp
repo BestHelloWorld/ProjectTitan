@@ -59,9 +59,10 @@ CreateGLRC(HWND hWnd)
 	return rc;
 }
 
-int WINAPI
-WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+int main()
 {
+	HINSTANCE hInstance = GetModuleHandle(NULL);
+
 	WNDCLASSEX wce =
 	{ 0 };
 	wce.cbSize = sizeof(wce);
@@ -122,11 +123,10 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShow
 	//	wglMakeCurrent(dc, rc);
 	//}
 
-	ShowWindow(hWnd, nShowCmd);
-	UpdateWindow(hWnd);
+	ShowWindow(hWnd, SW_SHOW);
 
+	// CALL OPENGL INIT FUNCTION
 	Init();
-
 	SetViewportSize(1024, 762);
 
 	MSG msg =
@@ -145,14 +145,15 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShow
 
 		static FLOAT currentTimeElapse = 0.16f;
 		static UINT hTime = 0;
-		currentTimeElapse = (FLOAT)GetTimeElapse(&hTime);
+		currentTimeElapse = GetTimeElapse(&hTime);
 
+		// CALL OPENGL DRAW FUNCTION
 		Draw(currentTimeElapse);
 
 		SwapBuffers(dc);
 	}
 
-	return 0;
+	return msg.wParam;
 }
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

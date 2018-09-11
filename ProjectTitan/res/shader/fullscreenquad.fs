@@ -18,7 +18,7 @@ vec4 CalcHBlur()
 	float n = 1.0;
 	float t = n / float(weight.length - 1) * 2.0;
 	float d = t / float(weight.length - 1);
-	for(int i = weight.length - 1; i >= 1; --i)
+	for(int i = int(weight.length) - 1; i >= 1; --i)
 	{
 		weight[index++] = float(i)*d;
 	}
@@ -40,7 +40,7 @@ vec4 CalcVBlur()
 	float n = 1.0;
 	float t = n / float(weight.length - 1) * 2.0;
 	float d = t / float(weight.length - 1);
-	for(int i = weight.length - 1; i >= 1; --i)
+	for(int i = int(weight.length) - 1; i >= 1; --i)
 	{
 		weight[index++] = float(i)*d;
 	}

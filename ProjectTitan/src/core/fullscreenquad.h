@@ -7,32 +7,41 @@ class Program;
 class VertexBuffer;
 class FrameBuffer;
 
-typedef enum tagScreenLocation
+typedef enum tagSCREEN_LOCATION
 {
 	FULL_SCREEN,
 	LEFT_TOP_SCREEN,
 	LEFT_BOTTOM_SCREEN,
 	RIGHT_TOP_SCREEN,
 	RIGHT_BOTTOM_SCREEN
-}ScreenLocation;
+}SCREEN_LOCATION;
+
+typedef enum tagQUAD_POSITION
+{
+	TOP,
+	BOTTOM,
+	LEFT,
+	RIGHT
+}QUAD_POSITION;
 
 class FullScreenQuad
 {
 public:
-	void Init(ScreenLocation location = FULL_SCREEN);
-	void Init(const CHAR * vs, const CHAR * fs, ScreenLocation location = FULL_SCREEN);
+	void Init(SCREEN_LOCATION location = FULL_SCREEN);
+	void Init(const CHAR * vs, const CHAR * fs, SCREEN_LOCATION location = FULL_SCREEN);
 
-	void InitBlur(INT width, INT height, ScreenLocation location = FULL_SCREEN);
+	void InitBlur(INT width, INT height, SCREEN_LOCATION location = FULL_SCREEN);
 
 	void Draw(BOOL is_drawBlur);
 	void SetTexture(UINT texture);
 	void SetTexture(UCHAR * texture, INT width, INT height, GLenum format = GL_RGB);
 	void SetAlphaMap(UINT texture);
+	void SetSide(QUAD_POSITION position, FLOAT top_or_left, FLOAT bottom_or_right);
 
-	void Move(FLOAT x, FLOAT y, FLOAT z, ScreenLocation location);
-	void Set(ScreenLocation location);
-	void SetLocation(ScreenLocation location);
-	void Reset(ScreenLocation location);
+	void Move(FLOAT x, FLOAT y, FLOAT z, SCREEN_LOCATION location);
+	void Set(SCREEN_LOCATION location);
+	void SetLocation(SCREEN_LOCATION location);
+	void Reset(SCREEN_LOCATION location);
 	void LoadIdentity();
 
 	void SetHorizontalBlur();
@@ -40,14 +49,14 @@ public:
 
 	static UINT GetFullScreenVertexBuffer();
 
-	FLOAT GetX();
-	FLOAT GetY();
-	FLOAT GetZ();
+	FLOAT & GetX();
+	FLOAT & GetY();
+	FLOAT & GetZ();
 
 
 public:
 	Program * mProgram;
-	ScreenLocation mScreenLocation;
+	SCREEN_LOCATION mScreenLocation;
 private:
 	VertexBuffer * mVertexBuffer;
 
