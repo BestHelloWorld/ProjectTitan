@@ -79,7 +79,7 @@ int main()
 	AdjustWindowRect(&screen, WS_OVERLAPPEDWINDOW, 0);
 
 	screenWidth = (screen.right - screen.left);
-	screenHeight =(screen.bottom - screen.top);
+	screenHeight = (screen.bottom - screen.top);
 
 	HWND hWnd =
 		CreateWindowEx(0, szClassName, szWinName, WS_OVERLAPPEDWINDOW, 200, 200, screenWidth, screenHeight, 0, 0, hInstance, 0);
@@ -164,19 +164,19 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_LBUTTONDOWN:
 	{
-		FLOAT x = LWORD(lParam);
-		FLOAT y = HWORD(lParam);
-		originPos.x = x;
-		originPos.y = y;
+		FLOAT x = static_cast<FLOAT>(LWORD(lParam));
+		FLOAT y = static_cast<FLOAT>(HWORD(lParam));
+		originPos.x = (LONG)x;
+		originPos.y = (LONG)y;
 		ClientToScreen(hWnd, (POINT*)&originPos);
 		bCaptureCursor = true;
 
 		FLOAT half_width = 512.0f;
 		FLOAT half_height = 762.0f * 0.5f;
 
-		OnTouch(EVENT_DOWN,x - half_width, half_height - y);
+		OnTouch(EVENT_DOWN, x - half_width, half_height - y);
 	}
-		break;
+	break;
 	case WM_MOUSEMOVE:
 		if (bCaptureCursor)
 		{
@@ -191,8 +191,8 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_LBUTTONUP:
 	{
-		FLOAT x = LWORD(lParam);
-		FLOAT y = HWORD(lParam);
+		FLOAT x = static_cast<FLOAT>(LWORD(lParam));
+		FLOAT y = static_cast<FLOAT>(HWORD(lParam));
 
 		FLOAT half_width = 512.0f;
 		FLOAT half_height = 762.0f * 0.5f;
@@ -202,7 +202,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		bCaptureCursor = false;
 		SetCursorPos(originPos.x, originPos.y);
 	}
-		break;
+	break;
 	case WM_KEYDOWN:
 		OnKey(EVENT_DOWN, (CHAR)wParam);
 		break;

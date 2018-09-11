@@ -85,6 +85,7 @@
 #define NULL			0
 
 #define BOOL			bool
+#define LONG			long
 #define ULONG			unsigned long
 #define UINT			unsigned int
 #define INT				int
