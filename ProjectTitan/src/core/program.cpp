@@ -144,12 +144,15 @@ void Program::Bind()
 	{
 		glUniform4fv(iter->second->location, 1, iter->second->v);
 	}
-
-
 }
 
 void Program::Unbind()
 {
+	if (mUniformTextures.size() > 0)
+		glBindTexture(GL_TEXTURE_2D, 0);
+	if (mUniformTextureCubes.size() > 0)
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
 	glUseProgram(0);
 }
 

@@ -19,7 +19,7 @@ void Camera::Init(cm::vec3 eye, cm::vec3 center, cm::vec3 up)
 	mRightDir = mViewDir.cross(mUp);
 	mTPos = cm::vec3(0.0f);
 
-	mFar = 1000.0f;
+	mFar = 500.0f;
 	mNear = 0.1f;
 
 	mViewMat = new cm::mat4(1.0f);
@@ -129,12 +129,12 @@ cm::vec4 Camera::WorldToScreen(cm::vec3 pos)
 	return r;
 }
 
-cm::vec4 Camera::NormalizeDevicePos(cm::vec4 worldPos)
-{
-	//std::cout << esm::mat4(GetProjectionMatrix()).dump() << std::endl;
-	cm::vec4 normalizePos = _getProjectionMatrix()*_getViewMatrix()*worldPos;
-	return normalizePos / normalizePos.w;
-}
+//cm::vec4 Camera::NormalizeDevicePos(cm::vec4 worldPos)
+//{
+//	//std::cout << esm::mat4(GetProjectionMatrix()).dump() << std::endl;
+//	cm::vec4 normalizePos = _getProjectionMatrix()*_getViewMatrix()*worldPos;
+//	return normalizePos / normalizePos.w;
+//}
 
 void Camera::CameraForward(FLOAT offset)
 {

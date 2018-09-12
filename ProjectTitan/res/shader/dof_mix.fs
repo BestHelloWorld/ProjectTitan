@@ -5,7 +5,7 @@ precision mediump float;
 uniform sampler2D U_Texture;
 uniform sampler2D U_BackgroundTexture;
 
-uniform sampler2D U_ShadowMap;
+// uniform sampler2D U_ShadowMap;
 
 uniform vec4 U_Color;
 

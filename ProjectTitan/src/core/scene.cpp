@@ -39,6 +39,14 @@ void Scene::Draw(FLOAT s)
 
 }
 
+UINT Scene::GetDepthBuffer()
+{
+	SceneManager * _sm = GetSceneManager();
+	if (!_sm)
+		return 0;
+	return _sm->GetDepthBuffer();
+}
+
 void Scene::InitDOF(UINT texture)
 {
 	mIsOpenDOF = TRUE;
@@ -185,6 +193,21 @@ void SceneManager::Next(const CHAR * sceneName)
 	mCurrent = iter->second;
 }
 
+FLOAT SceneManager::GetViewportWidth()
+{
+	return mViewportWidth;
+}
+
+FLOAT SceneManager::GetViewportHeight()
+{
+	return mViewportHeight;
+}
+
+FrameBuffer * SceneManager::GetFrameBuffer()
+{
+	return mMainFbo;
+}
+
 void SceneManager::SetScene(const CHAR * sceneName)
 {
 	auto iter = mScenes.find(sceneName);
@@ -199,6 +222,11 @@ void SceneManager::SetScene(const CHAR * sceneName)
 Scene * SceneManager::GetScene(const CHAR * sceneName)
 {
 	return mScenes.find(sceneName)->second;
+}
+
+UINT SceneManager::GetDepthBuffer()
+{
+	return mMainFbo->GetBuffer(FBO_DEPTH);
 }
 
 UCHAR * SceneManager::CaptureScene()
@@ -262,6 +290,7 @@ void SceneManager::_update(FLOAT elapse)
 
 		FLOAT complete_rate = abs(_real_total_distance) * .5f;
 
+		_check_update += _md;
 
 #if TRANSITION_STYLE == TRANSFORM_CUBE_ROTATE
 		const FLOAT MIN_SIDE = .4f;
@@ -281,9 +310,8 @@ void SceneManager::_update(FLOAT elapse)
 		mSubFullQuad->Move(_md, 0.f, 0.f, FULL_SCREEN);
 #endif
 
-		LOG_D("Complete :: %f", complete_rate);
+		//LOG_D("Complete :: %f", complete_rate);
 
-		_check_update += _md;
 		mSubFullQuad->Draw(FALSE);
 	}
 	else if (mMainFullQuad->GetX())

@@ -41,7 +41,6 @@ public:
 	FLOAT gWidth, gHeight;
 
 	FullScreenQuad fsq;
-	Program fsqProg;
 	Shadow shadow;
 
 	// CAMERA

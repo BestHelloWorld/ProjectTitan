@@ -102,7 +102,7 @@ void main()
 	if(U_FogLimit.y != 0.0)
 	{
 		float delta = CalcFog(abs(V_ProjectionPos.z), U_FogLimit.x, U_FogLimit.y);
-		color = (color * (1.0 - delta)) + (delta * U_FogColor);
+		color = (color * (1.0 - delta))/* + (delta * U_FogColor)*/;
 	}
 
 	gl_FragColor = color;

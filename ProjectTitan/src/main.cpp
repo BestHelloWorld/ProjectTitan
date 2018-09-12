@@ -1,3 +1,6 @@
+#define WIN_WIDTH	800
+#define WIN_HEIGHT	600
+
 #include "core/define.h"
 
 #include <GL/glew.h>
@@ -75,7 +78,7 @@ int main()
 	ATOM atom = RegisterClassEx(&wce);
 
 	::RECT screen =
-	{ 0, 0, 1024, 762 };
+	{ 0, 0, WIN_WIDTH, WIN_HEIGHT };
 	AdjustWindowRect(&screen, WS_OVERLAPPEDWINDOW, 0);
 
 	screenWidth = (screen.right - screen.left);
@@ -171,8 +174,8 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		ClientToScreen(hWnd, (POINT*)&originPos);
 		bCaptureCursor = true;
 
-		FLOAT half_width = 512.0f;
-		FLOAT half_height = 762.0f * 0.5f;
+		FLOAT half_width = (FLOAT)WIN_WIDTH * 0.5f;
+		FLOAT half_height = (FLOAT)WIN_HEIGHT * 0.5f;
 
 		OnTouch(EVENT_DOWN, x - half_width, half_height - y);
 	}
@@ -194,8 +197,8 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		FLOAT x = static_cast<FLOAT>(LWORD(lParam));
 		FLOAT y = static_cast<FLOAT>(HWORD(lParam));
 
-		FLOAT half_width = 512.0f;
-		FLOAT half_height = 762.0f * 0.5f;
+		FLOAT half_width = (FLOAT)WIN_WIDTH * 0.5f;
+		FLOAT half_height = (FLOAT)WIN_HEIGHT * 0.5f;
 
 		OnTouch(EVENT_UP, x - half_width, half_height - y);
 

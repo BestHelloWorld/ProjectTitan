@@ -1569,6 +1569,39 @@ namespace cm
 			return q.quat2mat3(q);
 		}
 
+		mat4 rotate(FLOAT eyex, FLOAT eyey, FLOAT eyez, FLOAT centerx, FLOAT centery, FLOAT centerz, FLOAT upx, FLOAT upy, FLOAT upz)
+		{
+			mat4 r;
+			vec3 eye(eyex, eyey, eyez);
+			vec3 center(centerx, centery, centerz);
+			vec3 up(upx, upy, upz);
+
+			vec3 z = eye - center;
+			z.normalize();
+			vec3 x = up.cross(z);
+			x.normalize();
+			vec3 y = z.cross(x);
+
+			r.v[0] = x.x; 
+			r.v[1] = x.y;
+			r.v[2] = x.z;
+			r.v[3] = 0.0f;
+			r.v[4] = y.x;
+			r.v[5] = y.y;
+			r.v[6] = y.z;
+			r.v[7] = 0.0f;
+			r.v[8] = z.x;
+			r.v[9] = z.y;
+			r.v[10] = z.z;
+			r.v[11] = 0.0f;
+			r.v[12] = 0.0f;
+			r.v[13] = 0.0f;
+			r.v[14] = 0.0f;
+			r.v[15] = 1.0f;
+
+			return r;
+		}
+
 		mat4 lookAt(FLOAT eyex, FLOAT eyey, FLOAT eyez, FLOAT centerx, FLOAT centery, FLOAT centerz, FLOAT upx, FLOAT upy, FLOAT upz)
 		{
 			vec3 eye(eyex, eyey, eyez), center(centerx, centery, centerz), up(upx, upy, upz);
@@ -1629,10 +1662,12 @@ namespace cm
 			T.v[15] = 1.0f;
 			return R * T;
 		}
+
 		mat4 lookAt(vec3 eye, vec3 center, vec3 up)
 		{
 			return lookAt(eye.x, eye.y, eye.z, center.x, center.y, center.z, up.x, up.y, up.z);
 		}
+
 		mat4 perspective(FLOAT fov, FLOAT aspect, FLOAT znear, FLOAT zfar)
 		{
 			FLOAT deltaZ = zfar - znear;
@@ -1664,7 +1699,7 @@ namespace cm
 			return r;
 		}
 
-		vec3 unproject(FLOAT normalPosX, FLOAT normalPosY, mat4 viewMatrix, mat4 projectionMatrix)
+		vec3 unProject(FLOAT normalPosX, FLOAT normalPosY, mat4 viewMatrix, mat4 projectionMatrix)
 		{
 			mat4 inv = (projectionMatrix*viewMatrix).inverse();
 			vec4 pos(normalPosX, normalPosY, 1.0f, 1.0f);

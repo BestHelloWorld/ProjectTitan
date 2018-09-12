@@ -58,7 +58,7 @@ class ButtonManager : public SpriteManager
 {
 public:
 	void Init(const CHAR * vs, const CHAR * fs, FLOAT screen_width, FLOAT screen_height, const CHAR * font_path);
-	void New(const CHAR * img_path, const WCHAR * text, FLOAT x, FLOAT y, FLOAT width, FLOAT height, std::function<void()> callback = []()->void {});
+	void New(const CHAR * img_path, const WCHAR * text, FLOAT x, FLOAT y, FLOAT width, FLOAT height, void(*callback)() = NULL);
 	void Draw();
 
 	void OnTouchDown(FLOAT x, FLOAT y);

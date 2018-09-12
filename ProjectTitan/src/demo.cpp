@@ -31,6 +31,9 @@ FrameBuffer fbo;
 Sound sound;
 UINT thud;
 
+Program dof_prog;
+FullScreenQuad dof_fsq;
+
 BOOL isGameover = FALSE;
 BOOL isEnemy = FALSE;
 
@@ -102,8 +105,7 @@ MainScene::Init()
 	//imgSprite.Init(spriteProg.GetProgramId(), "res/images/earth.bmp", 0.0f, 0.0f, 100.0f, 100.0f);
 
 	fsq.Init(RIGHT_TOP_SCREEN);
-	fsqProg.Init("res/shader/fullscreenquad.vs", "res/shader/fullscreenquad.fs",
-		&cam);
+
 
 	//TERRAIN INIT
 	terrain.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &cam, "res/images/height_256x256.bmp");
@@ -181,9 +183,7 @@ MainScene::SetViewport(FLOAT width, FLOAT height)
 	fbo.AttachDepthBuffer("depth", gWidth, gHeight);
 	fbo.AttachFinish();
 
-	fsqProg.SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, shadow.GetShadowMap());
-
-	//InitDOF("res/shader/dof_mix.vs", "res/shader/dof_mix.fs", width, height);
+	fsq.InitBlur(gWidth, gHeight, RIGHT_TOP_SCREEN);
 
 	Start();
 }
@@ -199,17 +199,27 @@ MainScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 	{
 	case EVENT_DOWN:
 	{
+		UINT depth = GetDepthBuffer();
+		FLOAT buf = 0;
+		FLOAT swidth = GetSceneManager()->GetViewportWidth() * 0.5f;
+		FLOAT sheight = GetSceneManager()->GetViewportHeight() * 0.5f;
+
+		FLOAT sx = x + swidth;
+		FLOAT sy = (y + sheight);
+		
+		GetSceneManager()->GetFrameBuffer()->Bind();
+		glReadPixels((INT)sx, (INT)sy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &buf);
+		GetSceneManager()->GetFrameBuffer()->Unbind();
+		LOG_D("depth : %f", buf);
+
 		FLOAT half_width = gWidth * 0.5f;
 		FLOAT half_height = gHeight * 0.5f;
 
 		x /= half_width;
 		y /= half_height;
 
-		cm::vec3 vec = cm::unproject(x, y, cam.GetViewMatrix(), cam.GetProjectionMatrix());
-
+		cm::vec3 vec = cm::unProject(x, y, cam.GetViewMatrix(), cam.GetProjectionMatrix());
 		FLOAT len = cm::rayPicking(vec, cam.GetEyePos(), raven.GetPosition());
-
-		LOG_D("vec : %s, len : %f", vec.dump(), len);
 		break;
 	}
 	case EVENT_MOVE:
@@ -225,7 +235,7 @@ MainScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 		x /= half_width;
 		y /= half_height;
 
-		cm::vec3 vec = cm::unproject(x, y, cam.GetViewMatrix(), cam.GetProjectionMatrix());
+		cm::vec3 vec = cm::unProject(x, y, cam.GetViewMatrix(), cam.GetProjectionMatrix());
 		Bullet.SetEmitDirection(vec.x * 0.5f, vec.y * 0.1f, abs(vec.z));
 		Bullet.Emit();
 
@@ -389,9 +399,7 @@ MainScene::Draw(FLOAT s)
 
 	if (bShowDepth)
 	{
-		fsqProg.Bind();
 		fsq.Draw(FALSE);
-		fsqProg.Unbind();
 	}
 
 	terrain.Draw();
@@ -493,15 +501,16 @@ WelcScene::Init()
 	mCam.Init();
 
 	welc_bg.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &mCam);
-	welc_bg.SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, "res/images/grass.bmp");
+	welc_bg.SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, "res/images/blank.bmp");
+	welc_bg.SetAmbientMaterial(1.f, 1.f, 1.f);
 	welc_bg.SetLightPos(0.0f, 10.0f, 0.0f, 0.0f);
 	welc_bg.SetUniform4f("U_WaterOption", 1.f, 1.f, 0.f, 0.f);
 	*welc_bg.mModelMatrix = *terrain.mModelMatrix * cm::rotate(90.f, 0.0f, 1.0f, 0.0f);
-	welc_bg.Move(-50.f, -15.f, -50.f);
+	welc_bg.Move(-100.f, -15.f, -50.f);
 	welc_bg.SetSize(.5f, 1.0f, .5f);
-	welc_bg.SetSpecularMaterial(0.3f, 0.3f, 0.3f);
-	welc_bg.SetFogLimit(50.0f, 400.0f);
-	welc_bg.SetFogColor(1.0f, 1.0f, 1.0f);
+	//welc_bg.SetSpecularMaterial(0.3f, 0.3f, 0.3f);
+	welc_bg.SetFogLimit(50.0f, 100.0f);
+	welc_bg.SetFogColor(0.f, 0.f, 0.f);
 
 	welc_air.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", "res/objs/raven.obj", &mCam);
 	welc_air.Move(-1.f, -1.f, -5.f);
@@ -577,14 +586,14 @@ FLOAT welc_woo;
 void
 WelcScene::Draw(FLOAT s)
 {
-	CLEAR_COLOR(0.1f, 0.2f, 0.4f);
+	CLEAR_COLOR(0.f, 0.f, 0.f);
 	mCam.Update();
 
 	bm.Draw();
-
-	welc_woo += .2f * s;
+	
+	welc_woo += .1f * s;
 	welc_bg.SetUniform4f("U_WaterOption", 1.f, 3.1415926f + sin(welc_woo) * .2f, 10.f, 0.f);
-	glPointSize(2.f);
+	//glPointSize(2.f);
 	welc_bg.Draw(GL_POINTS);
 
 	welc_air.Draw();

@@ -146,7 +146,11 @@ void ButtonManager::Init(const CHAR * vs, const CHAR * fs, FLOAT screen_width, F
 	mText = TextBitmap::GetInstance();
 }
 
-void ButtonManager::New(const CHAR * img_path, const WCHAR * text, FLOAT x, FLOAT y, FLOAT width, FLOAT height, std::function<void()> callback)
+void ButtonManager::New(const CHAR * img_path, 
+	const WCHAR * text, 
+	FLOAT x, FLOAT y, 
+	FLOAT width, FLOAT height, 
+	void(*callback)())
 {
 	//SpriteManager::New(img_path, x, y, width, height);
 	Button * is = new Button;
@@ -166,18 +170,16 @@ void ButtonManager::Draw()
 	mText->SetColor(1.0f, 1.0f, 1.0f);
 
 	DEPTH_TEST_END;
+	BLEND_BEGIN;
+	for (UINT i = 0; i < mTexts.size(); ++i)
 	{
-		BLEND_BEGIN;
-		for (UINT i = 0; i < mTexts.size(); ++i)
-		{
-			Rectf pos = mSprites[i]->mPos;
-			FLOAT half_font_size = (BUTTON_FONT_SZIE) / 2;
-			FLOAT x = pos.left + half_font_size;
-			FLOAT y = (pos.top + pos.bottom) / 2 - half_font_size;
-			mText->Draw(mTexts[i], x, y);
-		}
-		BLEND_END;
+		Rectf pos = mSprites[i]->mPos;
+		FLOAT half_font_size = (BUTTON_FONT_SZIE) / 2;
+		FLOAT x = pos.left + half_font_size;
+		FLOAT y = (pos.top + pos.bottom) / 2 - half_font_size;
+		mText->Draw(mTexts[i], x, y);
 	}
+	BLEND_END;
 	DEPTH_TEST_BEGIN;
 }
 

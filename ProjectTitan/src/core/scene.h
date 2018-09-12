@@ -25,6 +25,8 @@ public:
 	virtual void OnKey(UINT event, UCHAR chr);
 	virtual void Draw(FLOAT s);
 
+	UINT GetDepthBuffer();
+
 	void InitDOF(UINT texture);
 	SceneManager * GetSceneManager();
 
@@ -65,9 +67,17 @@ public:
 	BOOL Erase(const CHAR * sceneName);
 	void Next(const CHAR * sceneName);
 
-	void SetScene(const CHAR * sceneName);
+	// WINDOWS WIDTH & HEIGHT
+	FLOAT GetViewportWidth();
+	FLOAT GetViewportHeight();
 
+	// CURRENT DRAW FRAME BUFFER
+	FrameBuffer * GetFrameBuffer();
+
+	void SetScene(const CHAR * sceneName);
 	Scene * GetScene(const CHAR * sceneName);
+
+	UINT GetDepthBuffer();
 
 	UCHAR * CaptureScene();
 

@@ -30,12 +30,15 @@ public:
 	void Init(SCREEN_LOCATION location = FULL_SCREEN);
 	void Init(const CHAR * vs, const CHAR * fs, SCREEN_LOCATION location = FULL_SCREEN);
 
+	// BLUR
 	void InitBlur(INT width, INT height, SCREEN_LOCATION location = FULL_SCREEN);
 
 	void Draw(BOOL is_drawBlur);
 	void SetTexture(UINT texture);
 	void SetTexture(UCHAR * texture, INT width, INT height, GLenum format = GL_RGB);
 	void SetAlphaMap(UINT texture);
+	void SetDepthOfField(UINT alpha_map, UINT background_texture);
+
 	void SetSide(QUAD_POSITION position, FLOAT top_or_left, FLOAT bottom_or_right);
 
 	void Move(FLOAT x, FLOAT y, FLOAT z, SCREEN_LOCATION location);
@@ -65,6 +68,7 @@ private:
 
 	UINT mTexture = 0;
 	UINT mAlphaMap = 0;
+	UINT mBackgroundTexture = 0;
 
 	typedef struct tagPOSITION
 	{

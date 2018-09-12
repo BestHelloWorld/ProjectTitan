@@ -3,7 +3,9 @@ precision mediump float;
 #endif
 
 uniform sampler2D U_Texture;
+uniform sampler2D U_BackgroundTexture;
 uniform sampler2D U_AlphaMap;
+
 uniform vec4 U_Option;
 uniform vec4 U_Critical; // left -> top -> right -> bottom
 
@@ -64,12 +66,6 @@ vec4 CompressImg(float coefficient)
 
 void main()
 {
-//	if (V_Position.x > U_Critical.x && V_Position.y < U_Critical.y &&
-//		V_Position.x < U_Critical.z && V_Position.y > U_Critical.w)
-//	{
-//		gl_FragColor = texture2D(U_Texture, V_Texcoord);
-//		return;
-//	}
 
 	vec4 color = vec4(0.0);
 	if(U_Option.x > 0.0)
@@ -87,7 +83,8 @@ void main()
 	
 	if(U_Option.z > 0.0)
 	{
-		gl_FragColor = color * pow(texture2D(U_AlphaMap, V_Texcoord).r, 4.0);
+
+		discard;
 		return;
 	}
 	else
