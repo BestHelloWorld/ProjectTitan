@@ -39,6 +39,8 @@ public:
 	void SetAlphaMap(UINT texture);
 	void SetDepthOfField(UINT alpha_map, UINT background_texture);
 
+	Program * GetProgram();
+
 	void SetSide(QUAD_POSITION position, FLOAT top_or_left, FLOAT bottom_or_right);
 
 	void Move(FLOAT x, FLOAT y, FLOAT z, SCREEN_LOCATION location);

@@ -46,6 +46,14 @@ void Shadow::Add(ModelEmit * emit)
 	mDrawModelEmitList.push_back(emit);
 }
 
+void Shadow::Clear()
+{
+	mDrawList.clear();
+	mDrawTerrainList.clear();
+	mDrawModelList.clear();
+	mDrawModelEmitList.clear();
+}
+
 void Shadow::Draw()
 {
 	mFbo->Bind();
@@ -68,8 +76,18 @@ void Shadow::Draw()
 		mDrawModelEmitList[i]->ShadowDraw();
 	}
 
+	if (mShadowDraw)
+	{
+		mShadowDraw();
+	}
+
 	mProgram->Unbind();
 	mFbo->Unbind();
+}
+
+void Shadow::SetDrawFunction(void(*fun)())
+{
+	mShadowDraw = fun;
 }
 
 UINT Shadow::GetColorBuffer()
@@ -77,7 +95,7 @@ UINT Shadow::GetColorBuffer()
 	return mFbo->GetBuffer(FBO_COLOR);
 }
 
-UINT Shadow::GetShadowMap()
+UINT Shadow::GetDepthBuffer()
 {
 	return mFbo->GetBuffer(FBO_DEPTH);
 }

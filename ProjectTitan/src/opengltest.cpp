@@ -13,7 +13,7 @@ void Init()
 	manager = SceneManager::GetInstance();
 	manager->AddScene("MAIN", scene);
 	manager->AddScene("WELC", new WelcScene);
-	manager->AddScene("OVER", new OverScene);
+	manager->AddScene("TIME", new TimeScene);
 	manager->InitScenes();
 	manager->SetScene("WELC");
 }

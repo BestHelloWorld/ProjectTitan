@@ -113,8 +113,8 @@ void SceneManager::InitScenes()
 	mSubFbo = new FrameBuffer;
 	mSubFbo->Init();
 
-	//mBufFbo = new FrameBuffer;
-	//mBufFbo->Init();
+	mBufFbo = new FrameBuffer;
+	mBufFbo->Init();
 
 	mMainFullQuad = new FullScreenQuad;
 	mMainFullQuad->Init();
@@ -142,12 +142,12 @@ void SceneManager::SetViewport(FLOAT width, FLOAT height)
 	mMainFbo->AttachFinish();
 
 	mSubFbo->AttachColorBuffer(FBO_COLOR, GL_COLOR_ATTACHMENT0, (INT)width, (INT)height);
-	//mSubFbo->AttachDepthBuffer(FBO_DEPTH, (INT)width, (INT)height);
+	mSubFbo->AttachDepthBuffer(FBO_DEPTH, (INT)width, (INT)height);
 	mSubFbo->AttachFinish();
 
-	//mBufFbo->AttachColorBuffer(FBO_COLOR, GL_COLOR_ATTACHMENT0, (INT)width, (INT)height);
-	//mBufFbo->AttachDepthBuffer(FBO_DEPTH, (INT)width, (INT)height);
-	//mBufFbo->AttachFinish();
+	mBufFbo->AttachColorBuffer(FBO_COLOR, GL_COLOR_ATTACHMENT0, (INT)width, (INT)height);
+	mBufFbo->AttachDepthBuffer(FBO_DEPTH, (INT)width, (INT)height);
+	mBufFbo->AttachFinish();
 
 	mMainFullQuad->SetTexture(mMainFbo->GetBuffer(FBO_COLOR));
 
@@ -224,28 +224,51 @@ Scene * SceneManager::GetScene(const CHAR * sceneName)
 	return mScenes.find(sceneName)->second;
 }
 
+UINT SceneManager::GetColorBuffer()
+{
+	return mMainFbo->GetBuffer(FBO_COLOR);
+}
+
 UINT SceneManager::GetDepthBuffer()
 {
 	return mMainFbo->GetBuffer(FBO_DEPTH);
 }
 
-UCHAR * SceneManager::CaptureScene()
+void * SceneManager::CaptureScene(UINT capture_buffer)
 {
-	INT size = (INT)mViewportWidth * (INT)mViewportHeight * 3;
-	if (size <= 0.0f)
+
+	switch (capture_buffer)
 	{
-		LOG_E("Error : cannot capture scene.");
-		return NULL;
+	case CAPTURE_COLOR:
+	{
+		INT size = (INT)mViewportWidth * (INT)mViewportHeight * 3;
+		if (size <= 0.0f)
+		{
+			LOG_E("Error : cannot capture scene.");
+			return NULL;
+		}
+
+		UCHAR * buf = new UCHAR[size];
+		glReadnPixels(0, 0, (INT)mViewportWidth, (INT)mViewportHeight, GL_RGB, GL_UNSIGNED_BYTE, size, (void*)buf);
+		LOG_D("capture color :: width : %d, height : %d  size : %d", (INT)mViewportWidth, (INT)mViewportHeight, size);
+		return buf;
+	}
+	case CAPTURE_DEPTH:
+	{
+		//INT size = (INT)mViewportWidth * (INT)mViewportHeight;
+		//if (size <= 0.0f)
+		//{
+		//	LOG_E("Error : cannot capture scene.");
+		//	return NULL;
+		//}
+		//FLOAT * buf = new FLOAT[size];
+		//glReadnPixels(0, 0, (INT)mViewportWidth, (INT)mViewportHeight, GL_RGB, GL_UNSIGNED_BYTE, size, (void*)buf);
+		//LOG_D("capture depth :: width : %d, height : %d  size : %d", (INT)mViewportWidth, (INT)mViewportHeight, size);
+		//return buf;
+	}
 	}
 
-	UCHAR * buf = new UCHAR[size];
-	//mMainFbo->Bind();
-	glReadnPixels(0, 0, (INT)mViewportWidth, (INT)mViewportHeight, GL_RGB, GL_UNSIGNED_BYTE, size, (void*)buf);
-	//mMainFbo->Unbind();
-
-	LOG_D("capture width : %d, height : %d  size : %d", (INT)mViewportWidth, (INT)mViewportHeight, size);
-
-	return buf;
+	return NULL;
 }
 
 FLOAT _total_distance = 0.f;
@@ -260,7 +283,8 @@ void SceneManager::_initTransition()
 	_real_total_distance = 0.f;
 	_check_update = 2.0f;
 
-	UCHAR * buf = CaptureScene();
+#define CAPTURE_BUFFER CAPTURE_COLOR
+	UCHAR * buf = (UCHAR*)CaptureScene();
 	mSubFullQuad->SetTexture(buf, (INT)mViewportWidth, (INT)mViewportHeight, GL_RGB);
 	//mSubFullQuad->SetTexture(NULL, (INT)mViewportWidth, (INT)mViewportHeight, GL_RGB);
 	mSubFullQuad->Reset(FULL_SCREEN);
@@ -336,21 +360,21 @@ void SceneManager::Draw(FLOAT s)
 
 	if (mCurrent->mDOFTexture > 0 && mCurrent->mIsOpenDOF)
 	{
-		//  TEST
-		BLEND_BEGIN;
-		mMainFullQuad->SetAlphaMap(mMainFbo->GetBuffer(FBO_DEPTH));
-		mMainFullQuad->Draw(TRUE);
-
-		mMainFullQuad->SetAlphaMap(0);
-
-		mMainFullQuad->Move(0.f, 0.f, -1.f, FULL_SCREEN);
+		// DEPTH OF FIELD TEST
+		mBufFbo->Bind();
+		CLEAR_COLOR(0.1f, 0.2f, 0.4f);
+		mMainFullQuad->SetTexture(GetColorBuffer());
 		mMainFullQuad->Draw(FALSE);
-		mMainFullQuad->LoadIdentity();
+		mBufFbo->Unbind();
 
-		BLEND_END;
+		mMainFullQuad->SetDepthOfField(mCurrent->mDOFTexture, mBufFbo->GetBuffer(FBO_COLOR));
+		mMainFullQuad->mProgram->SetUniform4f("U_Option", 0.0f, 0.0f, 1.0f, 0.0f);
+		mMainFullQuad->Draw(TRUE);
+		mMainFullQuad->mProgram->SetUniform4f("U_Option", 0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	else
 	{
+		//mMainFullQuad->SetTexture(mMainFbo->GetBuffer(FBO_DEPTH));
 		mMainFullQuad->Draw(FALSE);
 	}
 }

@@ -1,5 +1,5 @@
-#define WIN_WIDTH	800
-#define WIN_HEIGHT	600
+#define WIN_WIDTH	1024
+#define WIN_HEIGHT	762
 
 #include "core/define.h"
 

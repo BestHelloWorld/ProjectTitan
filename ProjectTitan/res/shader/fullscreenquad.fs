@@ -2,6 +2,9 @@
 precision mediump float;
 #endif
 
+#define OFFSET 		200.0
+#define COUNT 		20
+
 uniform sampler2D U_Texture;
 uniform sampler2D U_BackgroundTexture;
 uniform sampler2D U_AlphaMap;
@@ -14,8 +17,8 @@ varying vec2 V_Position;
 
 vec4 CalcHBlur()
 {
-	float offset = 1.0 / 200.0;
-	float weight[20];
+	float offset = 1.0 / OFFSET;
+	float weight[COUNT];
 	int index = 0;
 	float n = 1.0;
 	float t = n / float(weight.length - 1) * 2.0;
@@ -36,8 +39,8 @@ vec4 CalcHBlur()
 
 vec4 CalcVBlur()
 {
-	float offset = 1.0 / 200.0;
-	float weight[20];
+	float offset = 1.0 / OFFSET;
+	float weight[COUNT];
 	int index = 0;
 	float n = 1.0;
 	float t = n / float(weight.length - 1) * 2.0;
@@ -83,8 +86,17 @@ void main()
 	
 	if(U_Option.z > 0.0)
 	{
+		float alpha = texture2D(U_AlphaMap, V_Texcoord).r;
 
-		discard;
+		// float focus = U_Option.z;
+		// alpha = abs(focus - alpha);
+
+		color = color * alpha;
+
+		vec4 bg = texture2D(U_BackgroundTexture, V_Texcoord);
+		alpha = 1.0 - alpha;
+		color = color + bg * alpha;
+		gl_FragColor = vec4(color);
 		return;
 	}
 	else

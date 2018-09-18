@@ -33,7 +33,7 @@ typedef struct {
   long endbyte;
   int  endbit;
 
-  unsigned char *buffer;
+  unsigned char *pixelData;
   unsigned char *ptr;
   long storage;
 } oggpack_buffer;

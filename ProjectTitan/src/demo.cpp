@@ -104,7 +104,7 @@ MainScene::Init()
 	//spriteProg.Init("res/shader/v.vs", "res/shader/f.fs", &cam);
 	//imgSprite.Init(spriteProg.GetProgramId(), "res/images/earth.bmp", 0.0f, 0.0f, 100.0f, 100.0f);
 
-	fsq.Init(RIGHT_TOP_SCREEN);
+	fsq.Init(FULL_SCREEN);
 
 
 	//TERRAIN INIT
@@ -152,6 +152,7 @@ MainScene::Init()
 	glEnable(GL_CULL_FACE);
 }
 
+FLOAT center;
 void
 MainScene::SetViewport(FLOAT width, FLOAT height)
 {
@@ -182,8 +183,9 @@ MainScene::SetViewport(FLOAT width, FLOAT height)
 	fbo.AttachColorBuffer("color", GL_COLOR_ATTACHMENT0, gWidth, gHeight);
 	fbo.AttachDepthBuffer("depth", gWidth, gHeight);
 	fbo.AttachFinish();
+	center = CreateTexture2DFromBMP("res/images/center.bmp");
 
-	fsq.InitBlur(gWidth, gHeight, RIGHT_TOP_SCREEN);
+	fsq.InitBlur(gWidth, gHeight, FULL_SCREEN);
 
 	Start();
 }
@@ -199,19 +201,6 @@ MainScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 	{
 	case EVENT_DOWN:
 	{
-		UINT depth = GetDepthBuffer();
-		FLOAT buf = 0;
-		FLOAT swidth = GetSceneManager()->GetViewportWidth() * 0.5f;
-		FLOAT sheight = GetSceneManager()->GetViewportHeight() * 0.5f;
-
-		FLOAT sx = x + swidth;
-		FLOAT sy = (y + sheight);
-		
-		GetSceneManager()->GetFrameBuffer()->Bind();
-		glReadPixels((INT)sx, (INT)sy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &buf);
-		GetSceneManager()->GetFrameBuffer()->Unbind();
-		LOG_D("depth : %f", buf);
-
 		FLOAT half_width = gWidth * 0.5f;
 		FLOAT half_height = gHeight * 0.5f;
 
@@ -220,6 +209,20 @@ MainScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 
 		cm::vec3 vec = cm::unProject(x, y, cam.GetViewMatrix(), cam.GetProjectionMatrix());
 		FLOAT len = cm::rayPicking(vec, cam.GetEyePos(), raven.GetPosition());
+
+		// TEST
+		UINT depth = GetDepthBuffer();
+		FLOAT buf = 0;
+		FLOAT swidth = GetSceneManager()->GetViewportWidth() * 0.5f;
+		FLOAT sheight = GetSceneManager()->GetViewportHeight() * 0.5f;
+
+		FLOAT sx = x + swidth;
+		FLOAT sy = (y + sheight);
+
+		GetSceneManager()->GetFrameBuffer()->Bind();
+		glReadPixels((INT)sx, (INT)sy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &buf);
+		GetSceneManager()->GetFrameBuffer()->Unbind();
+		LOG_D("depth : %f", buf);
 		break;
 	}
 	case EVENT_MOVE:
@@ -245,6 +248,7 @@ MainScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 	}
 }
 
+UINT capture_texture;
 void
 MainScene::OnKey(UINT event, UCHAR chr)
 {
@@ -304,14 +308,15 @@ MainScene::OnKey(UINT event, UCHAR chr)
 			break;
 		case 'K':
 		{
-			bMoveUp = FALSE; /*cam.PopMatrix();*/
-			UCHAR * buf = SceneManager::GetInstance()->CaptureScene();
+			UINT texture = CreateTexture2DFromBMP("res/images/center.bmp");
+			InitDOF(texture);
 
-			LOG_D("%d, %d, %d", buf[0], buf[1], buf[2]);
-			fsq.SetTexture(buf, gWidth, gHeight);
-			fsq.Move(0.f, 0.f, 0.f, RIGHT_TOP_SCREEN);
-
-			delete buf;
+			//bMoveUp = FALSE; /*cam.PopMatrix();*/
+			//FLOAT * buf = (FLOAT*)SceneManager::GetInstance()->CaptureScene(CAPTURE_COLOR);
+			//capture_texture = CreateTextureDepth(buf, 1024, 762, GL_FLOAT);
+			//LOG_D("%f, %f, %f", buf[0], buf[1], buf[2]);
+			//fsq.Move(0.f, 0.f, 0.f, RIGHT_TOP_SCREEN);
+			//delete buf;
 			break;
 		}
 		case 'J':
@@ -349,8 +354,6 @@ MainScene::EventUpdate(FLOAT s)
 	FLOAT x = 0.0f;
 	if (bMoveForward)
 		z = -(s * MOVE_RATIO);
-	//if (bMoveBackward)
-	//	z = (s * MOVE_RATIO);
 	if (bMoveLeft)
 		x = -(s * MOVE_RATIO);
 	if (bMoveRight)
@@ -363,8 +366,6 @@ MainScene::EventUpdate(FLOAT s)
 void
 MainScene::Move(FLOAT x, FLOAT y, FLOAT z)
 {
-	//LOG_D("MOVE x : %f, y : %f, z : %f", x, y, z);
-	//cam.Move(x, y, z);
 	raven.Move(x, y, z);
 	cm::vec3 pos = raven.GetPosition();
 
@@ -397,19 +398,17 @@ MainScene::Draw(FLOAT s)
 	skybox.Draw();
 	DEPTH_TEST_BEGIN;
 
-	if (bShowDepth)
-	{
-		fsq.Draw(FALSE);
-	}
-
 	terrain.Draw();
-
 	raven.Draw();
 
 	Bullet.Draw();
 	Enemy.Draw();
 
-	// TEST
+	// DEPTH OF FIELD TEST
+	if (bShowDepth)
+	{
+		InitDOF(center);
+	}
 
 	// DRAW FONT
 	BLEND_BEGIN;
@@ -420,22 +419,18 @@ MainScene::Draw(FLOAT s)
 		FPS = framesPerSecond;
 		framesPerSecond = 0;
 		currentMS = 0;
-
 		// AUTO EMIT
-		//Bullet.Emit();
 		if(isEnemy)
 			Enemy.Emit((FLOAT)(rand() % 100 - 50), 0.0f, 0.0f);
-
 		if (score > 10)
 			score -= 10;
 		else
 			score = 0;
+		LOG_D("Frame Per Second : %d", FPS);
 	}
 	swprintf(str, 120, L"FramesPerSecond : %d\0", FPS);
 	tb->SetAlpha(1.0f);
 	tb->Draw(str, -gWidth * 0.5f, gHeight * 0.5f - 30);
-
-
 	swprintf(str, 120, L"Score : %d\0", score);
 	tb->SetAlpha(1.0f);
 	tb->Draw(str, 0.0f, gHeight * 0.5f - 30);
@@ -524,13 +519,17 @@ WelcScene::SetViewport(FLOAT width, FLOAT height)
 {
 	mCam.Switch3D(45.0f, width / height);
 
-	bm.Init("res/shader/imagesprite.vs", "res/shader/imagesprite.fs", width,
-		height, "res/font/msyh.ttc");
-	bm.New("res/images/earth.bmp", L"START", 0.0f, 0.0f, 100.0f, 50.0f, []()->void
+	bm.Init("res/shader/imagesprite.vs", "res/shader/imagesprite.fs", width, height, "res/font/msyh.ttc");
+
+	bm.New("res/images/gray.bmp", L"START", 100.0f, -50.0f, 100.0f, 50.0f, []()->void
 	{
-		LOG_D("START BTN Clicked");
 		SceneManager::GetInstance()->Next("MAIN");
 		((MainScene*)SceneManager::GetInstance()->GetScene("MAIN"))->Start();
+	});
+
+	bm.New("res/images/gray.bmp", L"TIME", 100.0f, -120.0f, 100.0f, 50.0f, []()->void
+	{
+		SceneManager::GetInstance()->Next("TIME");
 	});
 }
 
@@ -599,32 +598,155 @@ WelcScene::Draw(FLOAT s)
 	welc_air.Draw();
 }
 
-void OverScene::Init()
-{
-	mCam.Init();
-}
+#define CIRCLE_OFFSET_Z 0.0f
 
-void OverScene::SetViewport(FLOAT width, FLOAT height)
-{
-	mCam.Switch3D(40.0f, width / height);
 
-	bm.Init("res/shader/imagesprite.vs", "res/shader/imagesprite.fs", width, height, "res/font/msyh.ttc");
-	bm.New("res/images/earth.bmp", L"START", 0.0f, 0.0f, 100.0f, 50.0f, []()->void
+Unit circle;
+cm::mat4 hours_dot_position[12];
+cm::mat4 hours_point_position;
+cm::mat4 minute_point_position;
+cm::mat4 second_point_position;
+cm::mat4 terrain_position;
+
+const float hour_rad = 360.0f / 12.0f;
+const float min_rad = 360.0f / 60.0f;
+
+Camera shadow_cam;
+Shadow shadow;
+
+FullScreenQuad date_fsq;
+BOOL date_isShowFsq = FALSE;
+
+
+void TimeScene::Init()
+{
+	mCam.Init();	
+	shadow_cam.Init(cm::vec3(0.0f, 30.0f, 15.0f), cm::vec3(0.0f, 0.0f, -0.0f), cm::vec3(0.0f, 1.0f, 0.0f));
+
+	circle.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", "res/objs/Sphere.obj", &mCam);
+	circle.SetLightPos(0.0f, 1.0f, 0.0f);
+	circle.SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, "res/images/blank.bmp");
+	circle.Move(0.0f, 0.0f, -CIRCLE_OFFSET_Z);
+
+	for (int i = 0; i < 12; ++i)
 	{
-		LOG_D("START BTN Clicked");
+		hours_dot_position[i] = cm::translate(0.0f, 0.0f, -CIRCLE_OFFSET_Z)*cm::rotate((i*hour_rad), 0.0f, 0.0f, 1.0f)*cm::translate(0.0f, 10.0f, 0.0f)*cm::scale(0.5f, 1.0f, 0.5f);
+	}
+
+	terrain_position = cm::translate(0.0f, -12.0f, -CIRCLE_OFFSET_Z)*cm::scale(20.0f, 0.2f, 20.0f);
+
+	center = CreateTexture2DFromBMP("res/images/center.bmp");
+	//InitDOF(center);
+
+	date_fsq.Init(RIGHT_TOP_SCREEN);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_CULL_FACE);
+}
+
+cm::mat4 SetTime(float deg, cm::mat4 scale)
+{
+	return cm::translate(0.0f, 0.0f, -CIRCLE_OFFSET_Z)*cm::rotate(deg, 0.0f, 0.0f, 1.0f)*scale*cm::translate(0.0f, 0.8f, 0.0f);
+}
+
+void TimeScene::SetViewport(FLOAT width, FLOAT height)
+{
+	mCam.Switch3D(45.0f, width / height);
+	mCam.mOffset = 30.0f;
+	shadow_cam.Switch2D(40.0f, 40.0f);
+
+	shadow.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &shadow_cam, (INT)width, (INT)height);
+	shadow.Add(&circle);
+	shadow.Clear();
+
+	date_fsq.SetTexture(shadow.GetDepthBuffer());
+
+	circle.mModel->mLightProjectMatrix = shadow_cam.GetProjectionMatrix();
+	circle.mModel->mLightViewMatrix = shadow_cam.GetViewMatrix();
+}
+
+void TimeScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
+{
+	switch (event)
+	{
+	case EVENT_MOVE:
+		mCam.Rotate(x / 4.0f, y / 4.0f);
+		break;
+	}
+}
+
+void TimeScene::OnKey(UINT event, UCHAR chr)
+{
+	switch (event)
+	{
+	case EVENT_UP:
+		date_isShowFsq = !date_isShowFsq;
+		break;
+	}
+}
+
+void TimeScene::Draw(FLOAT s)
+{
+	mCam.Update();
+
+	time_t t = time(0);
+	tm * date = std::localtime(&t);
+	cm::mat4 hours = SetTime(hour_rad*date->tm_hour, cm::scale(0.3f, 2.0f, 0.3f));
+	cm::mat4 minute = SetTime(min_rad*date->tm_min, cm::scale(0.2f, 3.0f, 0.2f));
+	cm::mat4 second = SetTime(min_rad*date->tm_sec, cm::scale(0.15f, 4.0f, 0.15f));
+
+	shadow.SetDrawFunction([]()->void {
+
+		time_t t = time(0);
+		tm * date = std::localtime(&t);
+		cm::mat4 hours = SetTime(hour_rad*date->tm_hour, cm::scale(0.3f, 2.0f, 0.3f));
+		cm::mat4 minute = SetTime(min_rad*date->tm_min, cm::scale(0.2f, 3.0f, 0.2f));
+		cm::mat4 second = SetTime(min_rad*date->tm_sec, cm::scale(0.15f, 4.0f, 0.15f));
+
+		for (int i = 0; i < 12; ++i)
+		{
+			*circle.mModel->mModelMatrix = hours_dot_position[i];
+			circle.ShadowDraw();
+		}
+
+		*circle.mModel->mModelMatrix = hours;
+		circle.ShadowDraw();
+
+		*circle.mModel->mModelMatrix = minute;
+		circle.ShadowDraw();
+
+		*circle.mModel->mModelMatrix = second;
+		circle.ShadowDraw();
+
+		*circle.mModel->mModelMatrix = terrain_position;
+		circle.ShadowDraw();
 	});
-}
+	shadow.Draw();
 
-void OverScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
-{
-}
+	CLEAR_COLOR(0.1f, 0.2f, 0.4f);
+	for (int i = 0; i < 12; ++i)
+	{
+		*circle.mModel->mModelMatrix = hours_dot_position[i];
+		circle.Draw();
+	}
 
-void OverScene::OnKey(UINT event, UCHAR chr)
-{
-}
+	*circle.mModel->mModelMatrix = hours;
+	circle.Draw();
 
-void OverScene::Draw(FLOAT s)
-{
-	CLEAR_COLOR(0.0f, 0.0f, 0.0f);
-	bm.Draw();
+	*circle.mModel->mModelMatrix = minute;
+	circle.Draw();
+
+	*circle.mModel->mModelMatrix = second;
+	circle.Draw();
+
+	*circle.mModel->mModelMatrix = terrain_position;
+	circle.Draw();
+
+	if (date_isShowFsq)
+	{
+		//date_fsq.SetTexture(GetSceneManager()->GetColorBuffer());
+		//date_fsq.Draw(FALSE);
+		InitDOF(center);
+	}
 }

@@ -10,8 +10,10 @@ class FullScreenQuad;
 
 #define TRANSFORM_TRANSLATE		0x2301
 #define TRANSFORM_CUBE_ROTATE	0x2302
-
 #define TRANSITION_STYLE		TRANSFORM_CUBE_ROTATE
+
+#define CAPTURE_COLOR			0x2401
+#define CAPTURE_DEPTH			0x2402
 
 class Scene
 {
@@ -77,9 +79,10 @@ public:
 	void SetScene(const CHAR * sceneName);
 	Scene * GetScene(const CHAR * sceneName);
 
+	UINT GetColorBuffer();
 	UINT GetDepthBuffer();
 
-	UCHAR * CaptureScene();
+	void * CaptureScene(UINT capture_buffer = CAPTURE_COLOR);
 
 	void _initTransition();
 	void _update(FLOAT elapse);
@@ -90,7 +93,7 @@ public:
 
 	Program * mFboProg;
 	FullScreenQuad * mMainFullQuad, * mSubFullQuad;
-	FrameBuffer * mMainFbo, * mSubFbo/*, * mBufFbo*/;
+	FrameBuffer * mMainFbo, * mSubFbo, * mBufFbo;
 	FLOAT mViewportWidth, mViewportHeight;
 
 	FLOAT mTransitionTime;

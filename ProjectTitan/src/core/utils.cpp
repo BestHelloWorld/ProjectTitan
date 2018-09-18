@@ -64,7 +64,6 @@ LoadFileContent(const CHAR *path, INT &fileSize)
 		buffer[nLen] = '\0';
 		return buffer;
 	}
-	GL_CALL;
 	return 0;
 #endif
 
@@ -144,7 +143,6 @@ GetTimeElapse(UINT * time)
 		*time = clock();
 		return 0;
 	}
-	//UINT currentTime = GetTickCount () - *time;
 
 	UINT currentTime = clock() - *time;
 	*time = clock();
@@ -154,15 +152,27 @@ GetTimeElapse(UINT * time)
 UINT
 CreateTexture2D(UCHAR *pixelData, INT width, INT height, GLenum type)
 {
-	UINT texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, type,
-		GL_UNSIGNED_BYTE, pixelData);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	GL_CALL;
+	UINT texture = 0;
+	glGenTextures(1, &texture);																   GL_CALL;
+	glBindTexture(GL_TEXTURE_2D, texture);													   GL_CALL;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);						   GL_CALL;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);						   GL_CALL;
+	glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, type, GL_UNSIGNED_BYTE, pixelData); GL_CALL;
+	glBindTexture(GL_TEXTURE_2D, 0);														   GL_CALL;
+
+	return texture;
+}
+
+UINT CreateTextureDepth(FLOAT * pixelData, INT width, INT height, GLenum type)
+{
+	UINT texture = 0;
+	glGenTextures(1, &texture);															  GL_CALL;
+	glBindTexture(GL_TEXTURE_2D, texture);												  GL_CALL;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);					  GL_CALL;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					  GL_CALL;
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, type, GL_FLOAT, pixelData);	  GL_CALL;
+	glBindTexture(GL_TEXTURE_2D, 0);													  GL_CALL;
+
 	return texture;
 }
 
@@ -170,18 +180,18 @@ UINT
 CreateTexture2DFromBMP(const CHAR* path)
 {
 	INT fileSize = 0;
-	UCHAR* fileContent = LoadFileContent(path, fileSize);
+	GL_CALL; UCHAR* fileContent = LoadFileContent(path, fileSize);
 	if (fileContent == 0)
 		return NEGATIVE_ONE;
 
 	INT imgWidth, imgHeight;
-	UCHAR* imgData = DecodeBMP(fileContent, imgWidth, imgHeight);
+	GL_CALL; UCHAR* imgData = DecodeBMP(fileContent, imgWidth, imgHeight);
 	if (imgData == 0)
 		return NEGATIVE_ONE;
 
-	UINT texture = CreateTexture2D(imgData, imgWidth, imgHeight, GL_RGB);
+	GL_CALL; UINT texture = CreateTexture2D(imgData, imgWidth, imgHeight, GL_RGB);
 	delete fileContent;
-	GL_CALL;
+
 	return texture;
 }
 

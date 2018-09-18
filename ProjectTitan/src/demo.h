@@ -67,7 +67,7 @@ public:
 	ButtonManager bm;
 };
 
-class OverScene : public Scene
+class TimeScene : public Scene
 {
 public:
 	void Init();

@@ -34,7 +34,7 @@ float CalcShadow()
 		
 	float depth = texture2D(U_ShadowMap, fragPos.xy).r;
 	float currentDepth = fragPos.z;
-	if(depth + 0.01 < currentDepth)
+	if(depth + 0.001 < currentDepth)
 	{
 		return 1.0;
 	}

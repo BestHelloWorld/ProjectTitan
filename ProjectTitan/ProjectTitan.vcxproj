@@ -83,7 +83,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>./lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;opengl32.lib;freetype.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;freetype.lib;OpenAL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -148,48 +148,6 @@
     <ClInclude Include="src\core\textbitmap.h" />
     <ClInclude Include="src\core\unit.h" />
     <ClInclude Include="src\core\utils.h" />
-    <ClInclude Include="src\core\vorbis\backends.h" />
-    <ClInclude Include="src\core\vorbis\bitrate.h" />
-    <ClInclude Include="src\core\vorbis\books\coupled\res_books_51.h" />
-    <ClInclude Include="src\core\vorbis\books\coupled\res_books_stereo.h" />
-    <ClInclude Include="src\core\vorbis\books\floor\floor_books.h" />
-    <ClInclude Include="src\core\vorbis\books\uncoupled\res_books_uncoupled.h" />
-    <ClInclude Include="src\core\vorbis\codebook.h" />
-    <ClInclude Include="src\core\vorbis\codec_internal.h" />
-    <ClInclude Include="src\core\vorbis\envelope.h" />
-    <ClInclude Include="src\core\vorbis\highlevel.h" />
-    <ClInclude Include="src\core\vorbis\lookup.h" />
-    <ClInclude Include="src\core\vorbis\lookup_data.h" />
-    <ClInclude Include="src\core\vorbis\lpc.h" />
-    <ClInclude Include="src\core\vorbis\lsp.h" />
-    <ClInclude Include="src\core\vorbis\masking.h" />
-    <ClInclude Include="src\core\vorbis\mdct.h" />
-    <ClInclude Include="src\core\vorbis\misc.h" />
-    <ClInclude Include="src\core\vorbis\modes\floor_all.h" />
-    <ClInclude Include="src\core\vorbis\modes\psych_11.h" />
-    <ClInclude Include="src\core\vorbis\modes\psych_16.h" />
-    <ClInclude Include="src\core\vorbis\modes\psych_44.h" />
-    <ClInclude Include="src\core\vorbis\modes\psych_8.h" />
-    <ClInclude Include="src\core\vorbis\modes\residue_16.h" />
-    <ClInclude Include="src\core\vorbis\modes\residue_44.h" />
-    <ClInclude Include="src\core\vorbis\modes\residue_44p51.h" />
-    <ClInclude Include="src\core\vorbis\modes\residue_44u.h" />
-    <ClInclude Include="src\core\vorbis\modes\residue_8.h" />
-    <ClInclude Include="src\core\vorbis\modes\setup_11.h" />
-    <ClInclude Include="src\core\vorbis\modes\setup_16.h" />
-    <ClInclude Include="src\core\vorbis\modes\setup_22.h" />
-    <ClInclude Include="src\core\vorbis\modes\setup_32.h" />
-    <ClInclude Include="src\core\vorbis\modes\setup_44.h" />
-    <ClInclude Include="src\core\vorbis\modes\setup_44p51.h" />
-    <ClInclude Include="src\core\vorbis\modes\setup_44u.h" />
-    <ClInclude Include="src\core\vorbis\modes\setup_8.h" />
-    <ClInclude Include="src\core\vorbis\modes\setup_X.h" />
-    <ClInclude Include="src\core\vorbis\os.h" />
-    <ClInclude Include="src\core\vorbis\psy.h" />
-    <ClInclude Include="src\core\vorbis\registry.h" />
-    <ClInclude Include="src\core\vorbis\scales.h" />
-    <ClInclude Include="src\core\vorbis\smallft.h" />
-    <ClInclude Include="src\core\vorbis\window.h" />
     <ClInclude Include="src\demo.h" />
     <ClInclude Include="src\opengltest.h" />
     <ClInclude Include="src\utaircraft.h" />
@@ -200,8 +158,6 @@
     <ClCompile Include="src\core\framebuffer.cpp" />
     <ClCompile Include="src\core\fullscreenquad.cpp" />
     <ClCompile Include="src\core\model.cpp" />
-    <ClCompile Include="src\core\ogg\bitwise.c" />
-    <ClCompile Include="src\core\ogg\framing.c" />
     <ClCompile Include="src\core\pointsprite.cpp" />
     <ClCompile Include="src\core\program.cpp" />
     <ClCompile Include="src\core\scene.cpp" />
@@ -212,28 +168,6 @@
     <ClCompile Include="src\core\textbitmap.cpp" />
     <ClCompile Include="src\core\unit.cpp" />
     <ClCompile Include="src\core\utils.cpp" />
-    <ClCompile Include="src\core\vorbis\analysis.c" />
-    <ClCompile Include="src\core\vorbis\bitrate.c" />
-    <ClCompile Include="src\core\vorbis\block.c" />
-    <ClCompile Include="src\core\vorbis\codebook.c" />
-    <ClCompile Include="src\core\vorbis\envelope.c" />
-    <ClCompile Include="src\core\vorbis\floor0.c" />
-    <ClCompile Include="src\core\vorbis\floor1.c" />
-    <ClCompile Include="src\core\vorbis\info.c" />
-    <ClCompile Include="src\core\vorbis\lookup.c" />
-    <ClCompile Include="src\core\vorbis\lpc.c" />
-    <ClCompile Include="src\core\vorbis\lsp.c" />
-    <ClCompile Include="src\core\vorbis\mapping0.c" />
-    <ClCompile Include="src\core\vorbis\mdct.c" />
-    <ClCompile Include="src\core\vorbis\psy.c" />
-    <ClCompile Include="src\core\vorbis\registry.c" />
-    <ClCompile Include="src\core\vorbis\res0.c" />
-    <ClCompile Include="src\core\vorbis\sharedbook.c" />
-    <ClCompile Include="src\core\vorbis\smallft.c" />
-    <ClCompile Include="src\core\vorbis\synthesis.c" />
-    <ClCompile Include="src\core\vorbis\vorbisenc.c" />
-    <ClCompile Include="src\core\vorbis\vorbisfile.c" />
-    <ClCompile Include="src\core\vorbis\window.c" />
     <ClCompile Include="src\demo.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\opengltest.cpp" />

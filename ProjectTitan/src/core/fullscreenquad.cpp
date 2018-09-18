@@ -76,23 +76,23 @@ void FullScreenQuad::Draw(BOOL is_drawBlur)
 		UINT location = glGetUniformLocation(mProgram->GetProgramId(), SHADER_SAMPLER2D_MAIN_TEXTURE);
 		if (location >= 0 && mTexture > 0)
 		{
-			glActiveTexture(GL_TEXTURE0);
+			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, mTexture);
-			glUniform1i(location, 0);
+			glUniform1i(location, 1);
 		}
 		location = glGetUniformLocation(mProgram->GetProgramId(), SHADER_SAMPLER2D_ALPHA_TEXTURE);
 		if (location >= 0 && mAlphaMap > 0)
 		{
-			glActiveTexture(GL_TEXTURE1);
+			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, mAlphaMap);
-			glUniform1i(location, 1);
+			glUniform1i(location, 2);
 		}
 		location = glGetUniformLocation(mProgram->GetProgramId(), SHADER_SAMPLER2D_BACKGROUND_TEXTURE);
 		if (location >= 0 && mBackgroundTexture > 0)
 		{
-			glActiveTexture(GL_TEXTURE2);
+			glActiveTexture(GL_TEXTURE3);
 			glBindTexture(GL_TEXTURE_2D, mBackgroundTexture);
-			glUniform1i(location, 2);
+			glUniform1i(location, 3);
 		}
 
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -157,6 +157,11 @@ void FullScreenQuad::SetDepthOfField(UINT alpha_map, UINT background_texture)
 {
 	mAlphaMap = alpha_map;
 	mBackgroundTexture = background_texture;
+}
+
+Program * FullScreenQuad::GetProgram()
+{
+	return mProgram;
 }
 
 void FullScreenQuad::SetSide(QUAD_POSITION position, FLOAT top_or_left, FLOAT bottom_or_right)

@@ -19,19 +19,26 @@ public:
 	void Add(Terrain * terrain);
 	void Add(Model * model);
 	void Add(ModelEmit * emit);
+	void Clear();
+
 	void Draw();
+
+	void SetDrawFunction(void(*fun)());
+
 	UINT GetColorBuffer();
-	UINT GetShadowMap();
+	UINT GetDepthBuffer();
 	FrameBuffer * GetFrameBuffer();
 
-	std::vector<Unit*> mDrawList;
-	std::vector<Terrain*> mDrawTerrainList;
-	std::vector<Model*> mDrawModelList;
+	std::vector<Unit*>		mDrawList;
+	std::vector<Terrain*>	mDrawTerrainList;
+	std::vector<Model*>		mDrawModelList;
 	std::vector<ModelEmit*> mDrawModelEmitList;
 
 	FrameBuffer * mFbo;
 	Program * mProgram;
 	Camera * mCamera;
+
+	void(*mShadowDraw)() = NULL;
 
 };
 
