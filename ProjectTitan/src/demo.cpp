@@ -4,6 +4,8 @@
 #include "core/animation.h"
 #include "core/sound.h"
 
+#include "vorbis/vorbisfile.h"
+
 #include <thread>
 
 Unit Raven;
