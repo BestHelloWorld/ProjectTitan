@@ -5,8 +5,10 @@
 #include <string.h>
 #include <math.h>
 
-#define _RAD(x)	x*3.1415926f/180.0f
-#define _SWAP(x, y) x ^= y, y ^= x, x ^= y
+#define _PI				3.1415926f
+#define _RAD(x)			x * _PI / 180.0f
+#define _ANGLE(x)		x * 180.0f / _PI
+#define _SWAP(x, y)		x ^= y, y ^= x, x ^= y
 
 #define BOOL			bool
 #define ULONG			unsigned long
@@ -417,6 +419,7 @@ namespace cm
 	};
 
 
+
 	class vec4
 	{
 	public:
@@ -617,6 +620,7 @@ namespace cm
 	};
 
 
+
 	class mat3
 	{
 	public:
@@ -679,19 +683,32 @@ namespace cm
 			return v[n];
 		}
 
-		mat3 operator=(const mat3 & m)
+		//mat3 operator=(const mat3 & m)
+		//{
+		//	mat3 r;
+		//	r.v[0] = m[0];
+		//	r.v[1] = m[1];
+		//	r.v[2] = m[2];
+		//	r.v[3] = m[3];
+		//	r.v[4] = m[4];
+		//	r.v[5] = m[5];
+		//	r.v[6] = m[6];
+		//	r.v[7] = m[7];
+		//	r.v[8] = m[8];
+		//	return r;
+		//}
+
+		void operator=(const mat3 & m)
 		{
-			mat3 r;
-			r.v[0] = m[0];
-			r.v[1] = m[1];
-			r.v[2] = m[2];
-			r.v[3] = m[3];
-			r.v[4] = m[4];
-			r.v[5] = m[5];
-			r.v[6] = m[6];
-			r.v[7] = m[7];
-			r.v[8] = m[8];
-			return r;
+			v[0] = m[0];
+			v[1] = m[1];
+			v[2] = m[2];
+			v[3] = m[3];
+			v[4] = m[4];
+			v[5] = m[5];
+			v[6] = m[6];
+			v[7] = m[7];
+			v[8] = m[8];
 		}
 
 		mat3 operator+(const mat3 & m)
@@ -709,6 +726,21 @@ namespace cm
 			return r;
 		}
 
+		mat3 operator+(FLOAT v)
+		{
+			mat3 r;
+			r.v[0] += v;
+			r.v[1] += v;
+			r.v[2] += v;
+			r.v[3] += v;
+			r.v[4] += v;
+			r.v[5] += v;
+			r.v[6] += v;
+			r.v[7] += v;
+			r.v[8] += v;
+			return r;
+		}
+
 		mat3 operator-(const mat3 & m)
 		{
 			mat3 r;
@@ -721,6 +753,21 @@ namespace cm
 			r.v[6] = v[6] - m[6];
 			r.v[7] = v[7] - m[7];
 			r.v[8] = v[8] - m[8];
+			return r;
+		}
+
+		mat3 operator-(FLOAT v)
+		{
+			mat3 r;
+			r.v[0] -= v;
+			r.v[1] -= v;
+			r.v[2] -= v;
+			r.v[3] -= v;
+			r.v[4] -= v;
+			r.v[5] -= v;
+			r.v[6] -= v;
+			r.v[7] -= v;
+			r.v[8] -= v;
 			return r;
 		}
 
@@ -791,6 +838,19 @@ namespace cm
 			v[8] += m.v[8];
 		}
 
+		void operator+=(FLOAT f)
+		{
+			v[0] += f;
+			v[1] += f;
+			v[2] += f;
+			v[3] += f;
+			v[4] += f;
+			v[5] += f;
+			v[6] += f;
+			v[7] += f;
+			v[8] += f;
+		}
+
 		void operator-=(const mat3 & m)
 		{
 			v[0] -= m.v[0];
@@ -804,6 +864,19 @@ namespace cm
 			v[8] -= m.v[8];
 		}
 
+		void operator-=(FLOAT f)
+		{
+			v[0] -= f;
+			v[1] -= f;
+			v[2] -= f;
+			v[3] -= f;
+			v[4] -= f;
+			v[5] -= f;
+			v[6] -= f;
+			v[7] -= f;
+			v[8] -= f;
+		}
+
 		void operator*=(const mat3 & m)
 		{
 			v[0] = v[0] * m[0] + v[1] * m[3] + v[2] * m[6];
@@ -815,6 +888,19 @@ namespace cm
 			v[6] = v[6] * m[0] + v[7] * m[3] + v[8] * m[6];
 			v[7] = v[6] * m[1] + v[7] * m[4] + v[8] * m[7];
 			v[8] = v[6] * m[2] + v[7] * m[5] + v[8] * m[8];
+		}
+
+		void operator*=(FLOAT f)
+		{
+			v[0] *= f;
+			v[1] *= f;
+			v[2] *= f;
+			v[3] *= f;
+			v[4] *= f;
+			v[5] *= f;
+			v[6] *= f;
+			v[7] *= f;
+			v[8] *= f;
 		}
 
 		void operator/=(FLOAT f)
@@ -896,6 +982,7 @@ namespace cm
 			};
 		};
 	};
+	
 
 	class mat4
 	{
@@ -968,7 +1055,22 @@ namespace cm
 
 		void operator=(const mat4 & m)
 		{
-			memcpy(v, m.v, sizeof(FLOAT) * 16);
+			v[0] = m[0];
+			v[1] = m[1];
+			v[2] = m[2];
+			v[3] = m[3];
+			v[4] = m[4];
+			v[5] = m[5];
+			v[6] = m[6];
+			v[7] = m[7];
+			v[8] = m[8];
+			v[9] = m[9];
+			v[10] = m[10];
+			v[11] = m[11];
+			v[12] = m[12];
+			v[13] = m[13];
+			v[14] = m[14];
+			v[15] = m[15];
 		}
 
 		mat4 operator+(const mat4 & m)
@@ -993,6 +1095,28 @@ namespace cm
 			return r;
 		}
 
+		mat4 operator+(FLOAT v)
+		{
+			mat4 r(*this);
+			r.v[0] +=	v;
+			r.v[1] +=	v;
+			r.v[2] +=	v;
+			r.v[3] +=	v;
+			r.v[4] +=	v;
+			r.v[5] +=	v;
+			r.v[6] +=	v;
+			r.v[7] +=	v;
+			r.v[8] +=	v;
+			r.v[9] +=	v;
+			r.v[10] +=	v;
+			r.v[11] +=	v;
+			r.v[12] +=	v;
+			r.v[13] +=	v;
+			r.v[14] +=	v;
+			r.v[15] +=	v;
+			return r;
+		}
+
 		mat4 operator-(const mat4 & m)
 		{
 			mat4 r(*this);
@@ -1012,6 +1136,28 @@ namespace cm
 			r.v[13] -= m[13];
 			r.v[14] -= m[14];
 			r.v[15] -= m[15];
+			return r;
+		}
+
+		mat4 operator-(FLOAT v)
+		{
+			mat4 r(*this);
+			r.v[0] -=	v;
+			r.v[1] -=	v;
+			r.v[2] -=	v;
+			r.v[3] -=	v;
+			r.v[4] -=	v;
+			r.v[5] -=	v;
+			r.v[6] -=	v;
+			r.v[7] -=	v;
+			r.v[8] -=	v;
+			r.v[9] -=	v;
+			r.v[10] -=	v;
+			r.v[11] -=	v;
+			r.v[12] -=	v;
+			r.v[13] -=	v;
+			r.v[14] -=	v;
+			r.v[15] -=	v;
 			return r;
 		}
 
@@ -1044,6 +1190,28 @@ namespace cm
 			r.v[13] = v[12] * m[1] + v[13] * m[5] + v[14] * m[9] + v[15] * m[13];
 			r.v[14] = v[12] * m[2] + v[13] * m[6] + v[14] * m[10] + v[15] * m[14];
 			r.v[15] = v[12] * m[3] + v[13] * m[7] + v[14] * m[11] + v[15] * m[15];
+			return r;
+		}
+
+		mat4 operator*(FLOAT v)
+		{
+			mat4 r(*this);
+			r.v[0] *= v;
+			r.v[1] *= v;
+			r.v[2] *= v;
+			r.v[3] *= v;
+			r.v[4] *= v;
+			r.v[5] *= v;
+			r.v[6] *= v;
+			r.v[7] *= v;
+			r.v[8] *= v;
+			r.v[9] *= v;
+			r.v[10] *= v;
+			r.v[11] *= v;
+			r.v[12] *= v;
+			r.v[13] *= v;
+			r.v[14] *= v;
+			r.v[15] *= v;
 			return r;
 		}
 
@@ -1089,6 +1257,26 @@ namespace cm
 			v[15] += m[15];
 		}
 
+		void operator+=(FLOAT f)
+		{
+			v[0] += f;
+			v[1] += f;
+			v[2] += f;
+			v[3] += f;
+			v[4] += f;
+			v[5] += f;
+			v[6] += f;
+			v[7] += f;
+			v[8] += f;
+			v[9] += f;
+			v[10] += f;
+			v[11] += f;
+			v[12] += f;
+			v[13] += f;
+			v[14] += f;
+			v[15] += f;
+		}
+
 		void operator-=(const mat4 & m)
 		{
 			v[0] -= m[0];
@@ -1109,6 +1297,26 @@ namespace cm
 			v[15] -= m[15];
 		}
 
+		void operator-=(FLOAT f)
+		{
+			v[0] -= f;
+			v[1] -= f;
+			v[2] -= f;
+			v[3] -= f;
+			v[4] -= f;
+			v[5] -= f;
+			v[6] -= f;
+			v[7] -= f;
+			v[8] -= f;
+			v[9] -= f;
+			v[10] -= f;
+			v[11] -= f;
+			v[12] -= f;
+			v[13] -= f;
+			v[14] -= f;
+			v[15] -= f;
+		}
+
 		void operator*=(const mat4 & m)
 		{
 			v[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[8] + v[3] * m[12];
@@ -1127,6 +1335,26 @@ namespace cm
 			v[13] = v[12] * m[1] + v[13] * m[5] + v[14] * m[9] + v[15] * m[13];
 			v[14] = v[12] * m[2] + v[13] * m[6] + v[14] * m[10] + v[15] * m[14];
 			v[15] = v[12] * m[3] + v[13] * m[7] + v[14] * m[11] + v[15] * m[15];
+		}
+
+		void operator*=(FLOAT f)
+		{
+			v[0] *= f;
+			v[1] *= f;
+			v[2] *= f;
+			v[3] *= f;
+			v[4] *= f;
+			v[5] *= f;
+			v[6] *= f;
+			v[7] *= f;
+			v[8] *= f;
+			v[9] *= f;
+			v[10] *= f;
+			v[11] *= f;
+			v[12] *= f;
+			v[13] *= f;
+			v[14] *= f;
+			v[15] *= f;
 		}
 
 		void operator/=(FLOAT r)
@@ -1262,6 +1490,173 @@ namespace cm
 			};
 		};
 	};
+
+
+	namespace
+	{
+		vec2 operator+(FLOAT l, const vec2 & r)
+		{
+			return vec2(l + r.x, l + r.y);
+		}
+		vec2 operator-(FLOAT l, const vec2 & r)
+		{
+			return vec2(l - r.x, l - r.y);
+		}
+		vec2 operator*(FLOAT l, const vec2 & r)
+		{
+			return vec2(l * r.x, l * r.y);
+		}
+		vec2 operator/(FLOAT l, const vec2 & r)
+		{
+			return vec2(l / r.x, l / r.y);
+		}
+
+
+		vec3 operator+(FLOAT l, const vec3 & r)
+		{
+			return vec3(l + r.x, l + r.y, l + r.z);
+		}
+		vec3 operator-(FLOAT l, const vec3 & r)
+		{
+			return vec3(l - r.x, l - r.y, l - r.z);
+		}
+		vec3 operator*(FLOAT l, const vec3 & r)
+		{
+			return vec3(l * r.x, l * r.y, l * r.z);
+		}
+		vec3 operator/(FLOAT l, const vec3 & r)
+		{
+			return vec3(l / r.x, l / r.y, l / r.z);
+		}
+
+
+		vec4 operator+(FLOAT l, const vec4 & r)
+		{
+			return vec4(l + r.x, l + r.y, l + r.z, l + r.w);
+		}
+		vec4 operator-(FLOAT l, const vec4 & r)
+		{
+			return vec4(l - r.x, l - r.y, l - r.z, l - r.w);
+		}
+		vec4 operator*(FLOAT l, const vec4 & r)
+		{
+			return vec4(l * r.x, l * r.y, l * r.z, l * r.w);
+		}
+		vec4 operator/(FLOAT l, const vec4 & r)
+		{
+			return vec4(l / r.x, l / r.y, l / r.z, l / r.w);
+		}
+
+
+		mat3 operator+(FLOAT l, const mat3 & r)
+		{
+			cm::mat3 res;
+			res.v[0] = r[0] + l;
+			res.v[1] = r[1] + l;
+			res.v[2] = r[2] + l;
+			res.v[3] = r[3] + l;
+			res.v[4] = r[4] + l;
+			res.v[5] = r[5] + l;
+			res.v[6] = r[6] + l;
+			res.v[7] = r[7] + l;
+			res.v[8] = r[8] + l;
+			return res;
+		}
+		mat3 operator-(FLOAT l, const mat3 & r)
+		{
+			cm::mat3 res;
+			res.v[0] = l - r[0];
+			res.v[1] = l - r[1];
+			res.v[2] = l - r[2];
+			res.v[3] = l - r[3];
+			res.v[4] = l - r[4];
+			res.v[5] = l - r[5];
+			res.v[6] = l - r[6];
+			res.v[7] = l - r[7];
+			res.v[8] = l - r[8];
+			return res;
+		}
+		mat3 operator*(FLOAT l, const mat3 & r)
+		{
+			cm::mat3 res;
+			res.v[0] = r[0] * l;
+			res.v[1] = r[1] * l;
+			res.v[2] = r[2] * l;
+			res.v[3] = r[3] * l;
+			res.v[4] = r[4] * l;
+			res.v[5] = r[5] * l;
+			res.v[6] = r[6] * l;
+			res.v[7] = r[7] * l;
+			res.v[8] = r[8] * l;
+			return res;
+		}
+
+
+		mat4 operator+(FLOAT l, const mat4 & r)
+		{
+			mat4 res;
+			res.v[0] = r.v[0] + l;
+			res.v[1] = r.v[1] + l;
+			res.v[2] = r.v[2] + l;
+			res.v[3] = r.v[3] + l;
+			res.v[4] = r.v[4] + l;
+			res.v[5] = r.v[5] + l;
+			res.v[6] = r.v[6] + l;
+			res.v[7] = r.v[7] + l;
+			res.v[8] = r.v[8] + l;
+			res.v[9] = r.v[9] + l;
+			res.v[10] = r.v[10] + l;
+			res.v[11] = r.v[11] + l;
+			res.v[12] = r.v[12] + l;
+			res.v[13] = r.v[13] + l;
+			res.v[14] = r.v[14] + l;
+			res.v[15] = r.v[15] + l;
+			return res;
+		}
+		mat4 operator-(FLOAT l, const mat4 & r)
+		{
+			mat4 res;
+			res.v[0] = l - r.v[0];
+			res.v[1] = l - r.v[1];
+			res.v[2] = l - r.v[2];
+			res.v[3] = l - r.v[3];
+			res.v[4] = l - r.v[4];
+			res.v[5] = l - r.v[5];
+			res.v[6] = l - r.v[6];
+			res.v[7] = l - r.v[7];
+			res.v[8] = l - r.v[8];
+			res.v[9] = l - r.v[9];
+			res.v[10] = l - r.v[10];
+			res.v[11] = l - r.v[11];
+			res.v[12] = l - r.v[12];
+			res.v[13] = l - r.v[13];
+			res.v[14] = l - r.v[14];
+			res.v[15] = l - r.v[15];
+			return res;
+		}
+		mat4 operator*(FLOAT l, const mat4 & r)
+		{
+			mat4 res;
+			res.v[0] = r.v[0] * l;
+			res.v[1] = r.v[1] * l;
+			res.v[2] = r.v[2] * l;
+			res.v[3] = r.v[3] * l;
+			res.v[4] = r.v[4] * l;
+			res.v[5] = r.v[5] * l;
+			res.v[6] = r.v[6] * l;
+			res.v[7] = r.v[7] * l;
+			res.v[8] = r.v[8] * l;
+			res.v[9] = r.v[9] * l;
+			res.v[10] = r.v[10] * l;
+			res.v[11] = r.v[11] * l;
+			res.v[12] = r.v[12] * l;
+			res.v[13] = r.v[13] * l;
+			res.v[14] = r.v[14] * l;
+			res.v[15] = r.v[15] * l;
+			return res;
+		}
+	}
+
 
 	class quat
 	{
@@ -1515,6 +1910,15 @@ namespace cm
 		{
 			mat4*mp = new mat4(m);
 			return mp->v;
+		}
+
+		FLOAT find_angle(cm::vec2 v1, cm::vec2 v2)
+		{
+			v1 = v1.normalize();
+			v2 = v2.normalize();
+			//FLOAT y = (v1.y * v2.y) <= 0.0f ? -1.0f : 1.0f;
+			//FLOAT x = (v1.x * v2.x) <= 0.0f ? -1.0f : 1.0f;
+			return _ANGLE(acosf((v1 * v2) / (v1.magnitude() * v2.magnitude())))/* * y*/;
 		}
 
 		mat4 translate(FLOAT x = 0.0f, FLOAT y = 0.0f, FLOAT z = 0.0f)

@@ -72,7 +72,10 @@
 
 #define OFFSETOF(obj, mem) (int)(((obj*)0)->mem)
 
-#define RAD(x)			x*3.1415926f/180.0f
+#define PI				3.1415926f
+#define TO_RAD(x)		x * PI / 180.0f
+#define TO_ANGLE(x)		x * 180.0f / PI
+
 #define POW_2(x)		pow(x, 2)
 #define POW_4(x)		pow(x, 4)
 #define POW_8(x)		pow(x, 8)

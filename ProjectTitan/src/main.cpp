@@ -115,16 +115,16 @@ int main()
 
 	glewInit();
 
-	//if (wglCreateContextAttribsARB)
-	//{
-	//	wglDeleteContext(rc);
-	//	ReleaseDC(hWnd, dc);
-	//	DestroyWindow(hWnd);
-	//	hWnd = CreateWindowEx(0, szClassName, szWinName, WS_OVERLAPPEDWINDOW, 200, 200, screenWidth, screenHeight, 0, 0, hInstance, 0);
-	//	rc = CreateGLRC(hWnd);
-	//	dc = GetDC(hWnd);
-	//	wglMakeCurrent(dc, rc);
-	//}
+	if (wglCreateContextAttribsARB)
+	{
+		wglDeleteContext(rc);
+		ReleaseDC(hWnd, dc);
+		DestroyWindow(hWnd);
+		hWnd = CreateWindowEx(0, szClassName, szWinName, WS_OVERLAPPEDWINDOW, 200, 200, screenWidth, screenHeight, 0, 0, hInstance, 0);
+		rc = CreateGLRC(hWnd);
+		dc = GetDC(hWnd);
+		wglMakeCurrent(dc, rc);
+	}
 
 	ShowWindow(hWnd, SW_SHOW);
 

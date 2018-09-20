@@ -495,7 +495,7 @@ Unit welc_air;
 void
 WelcScene::Init()
 {
-	mCam.Init();
+	mCam.Init(cm::vec3(0.0f, 0.0f, 0.0f), cm::vec3(0.0f, 0.0f, -1.0f), cm::vec3(0.0f, 1.0f, 0.0f));
 
 	welc_bg.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &mCam);
 	welc_bg.SetTexture(SHADER_SAMPLER2D_MAIN_TEXTURE, "res/images/blank.bmp");
@@ -512,14 +512,14 @@ WelcScene::Init()
 	welc_air.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", "res/objs/raven.obj", &mCam);
 	welc_air.Move(-1.f, -1.f, -5.f);
 	welc_air.Scale(.1f, .1f, .1f);
-	welc_air.SetLightPos(0.0f, 1.0f, 0.0f);
+	welc_air.SetLightPos(0.0f, 1.0f, 1.0f);
 	welc_air.SetTexture("U_Texture", "res/images/raven.bmp");
 }
 
 void
 WelcScene::SetViewport(FLOAT width, FLOAT height)
 {
-	mCam.Switch3D(45.0f, width / height);
+	mCam.Switch3D(40.0f, width / height);
 
 	bm.Init("res/shader/imagesprite.vs", "res/shader/imagesprite.fs", width, height, "res/font/msyh.ttc");
 
@@ -622,8 +622,8 @@ BOOL date_isShowFsq = FALSE;
 
 void TimeScene::Init()
 {
-	mCam.Init();	
-	shadow_cam.Init(cm::vec3(0.0f, 30.0f, 15.0f), cm::vec3(0.0f, 0.0f, -0.0f), cm::vec3(0.0f, 1.0f, 0.0f));
+	mCam.Init(cm::vec3(0.0f, 0.0, 1.0f), cm::vec3(0.0f, 0.0f, 0.0f), cm::vec3(0.0f, 1.0f, 0.0f));
+	shadow_cam.Init(cm::vec3(0.0f, 30.0, 15.0f), cm::vec3(0.0f, 0.0f, 0.0f), cm::vec3(0.0f, 1.0f, 0.0f));
 
 	circle.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", "res/objs/Sphere.obj", &mCam);
 	circle.SetLightPos(0.0f, 1.0f, 0.0f);
@@ -635,12 +635,10 @@ void TimeScene::Init()
 		hours_dot_position[i] = cm::translate(0.0f, 0.0f, -CIRCLE_OFFSET_Z)*cm::rotate((i*hour_rad), 0.0f, 0.0f, 1.0f)*cm::translate(0.0f, 10.0f, 0.0f)*cm::scale(0.5f, 1.0f, 0.5f);
 	}
 
-	terrain_position = cm::translate(0.0f, -12.0f, -CIRCLE_OFFSET_Z)*cm::scale(20.0f, 0.2f, 20.0f);
+	terrain_position = cm::translate(0.0f, -15.0f, -CIRCLE_OFFSET_Z)*cm::scale(20.0f, 2.0f, 20.0f);
 
 	center = CreateTexture2DFromBMP("res/images/center.bmp");
 	//InitDOF(center);
-
-	date_fsq.Init(RIGHT_TOP_SCREEN);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
@@ -657,11 +655,13 @@ void TimeScene::SetViewport(FLOAT width, FLOAT height)
 	mCam.Switch3D(45.0f, width / height);
 	mCam.mOffset = 30.0f;
 	shadow_cam.Switch2D(40.0f, 40.0f);
+	shadow_cam.mOffset = 30.0f;
 
 	shadow.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &shadow_cam, (INT)width, (INT)height);
 	shadow.Add(&circle);
 	shadow.Clear();
 
+	date_fsq.InitBlur(width * 2.0f, height * 2.0f, FULL_SCREEN);
 	date_fsq.SetTexture(shadow.GetDepthBuffer());
 
 	circle.mModel->mLightProjectMatrix = shadow_cam.GetProjectionMatrix();
@@ -674,6 +674,7 @@ void TimeScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 	{
 	case EVENT_MOVE:
 		mCam.Rotate(x / 4.0f, y / 4.0f);
+		shadow_cam.Rotate(x / 8.0f, y / 8.0f);
 		break;
 	}
 }
@@ -691,6 +692,7 @@ void TimeScene::OnKey(UINT event, UCHAR chr)
 void TimeScene::Draw(FLOAT s)
 {
 	mCam.Update();
+	shadow_cam.Update();
 
 	time_t t = time(0);
 	tm * date = std::localtime(&t);
@@ -747,8 +749,7 @@ void TimeScene::Draw(FLOAT s)
 
 	if (date_isShowFsq)
 	{
-		//date_fsq.SetTexture(GetSceneManager()->GetColorBuffer());
-		//date_fsq.Draw(FALSE);
-		InitDOF(center);
+		date_fsq.Draw(FALSE);
+		//InitDOF(center);
 	}
 }

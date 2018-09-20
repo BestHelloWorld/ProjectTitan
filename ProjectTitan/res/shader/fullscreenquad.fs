@@ -2,8 +2,8 @@
 precision mediump float;
 #endif
 
-#define OFFSET 		200.0
-#define COUNT 		20
+#define OFFSET 		400.0
+#define COUNT 		10
 
 uniform sampler2D U_Texture;
 uniform sampler2D U_BackgroundTexture;

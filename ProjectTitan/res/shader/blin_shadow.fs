@@ -34,14 +34,13 @@ float CalcShadow()
 		
 	float depth = texture2D(U_ShadowMap, fragPos.xy).r;
 	float currentDepth = fragPos.z;
-	if(depth + 0.001 < currentDepth)
-	{
+
+	if(depth + 0.0001 <= currentDepth)
 		return 1.0;
-	}
+//	else if(depth + 0.0005 <= currentDepth)
+//		return 0.5;
 	else
-	{
 		return 0.0;
-	}
 }
 
 float CalcFog(float distance, float near, float far)
@@ -89,14 +88,13 @@ void main()
 	}
 
 	// CALC SHADOW
-	if(depth > 0.0)
-	{
-		color = texture2D(U_Texture, V_Texcoord)*(U_AmbientMaterial + diffuse + specular) * 0.5;
-	}
+	if(depth == 1.0)
+		color = texture2D(U_Texture, V_Texcoord)*(U_AmbientMaterial + diffuse + specular) ;
+	else if(depth == 0.5)
+		color = texture2D(U_Texture, V_Texcoord)*(U_AmbientMaterial + diffuse + specular) * 0.8;
 	else
-	{
 		color = texture2D(U_Texture, V_Texcoord)*(U_AmbientMaterial + diffuse + specular);
-	}
+
 
 	// CALC FOG
 	if(U_FogLimit.y != 0.0)

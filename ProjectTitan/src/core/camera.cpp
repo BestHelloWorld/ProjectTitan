@@ -8,12 +8,32 @@
 
 void Camera::Init(cm::vec3 eye, cm::vec3 center, cm::vec3 up)
 {
+	cm::vec2 c;
+	cm::vec2 z;
+	cm::vec3 v3;
+
+	FLOAT x = 0.0f;
+	FLOAT y = 0.0f;
+
 	mEye = eye;
 	mCenter = center;
 	mUp = up;
 	mOffset = 0.0f;
-	mYaw = 270.0f;
-	mPitch = 0.0f;
+	
+	v3 = center - eye;
+	c = cm::vec2(v3.x, v3.z);
+	z = cm::vec2(0.0f, -1.0f);
+	x = v3.x < 0.0f ? -1.0f : 1.0f;
+	y = cm::find_angle(c, z) * x;
+
+	mYaw = 270.0f + y;
+
+	c = cm::vec2(-v3.z, v3.y);
+	z = cm::vec2(1.0f, 0.0f);
+	y = v3.y < 0.0f ? -1.0f : 1.0f;
+	y = cm::find_angle(c, z) * y;
+
+	mPitch = y;
 
 	mViewDir = mCenter - mEye;
 	mRightDir = mViewDir.cross(mUp);
@@ -104,7 +124,7 @@ void Camera::Rotate(FLOAT yaw, FLOAT pitch, FLOAT roll)
 void Camera::Update()
 {
 	// UPDATE RAY
-	if (mYaw && mPitch)
+	if (mYaw || mPitch)
 	{
 		mViewDir.x = cm::cos(mYaw) * cm::cos(mPitch);
 		mViewDir.y = cm::sin(mPitch);
