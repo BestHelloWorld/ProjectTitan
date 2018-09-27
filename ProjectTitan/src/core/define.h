@@ -1,6 +1,13 @@
 #ifndef __GGL_H
 #define __GGL_H
 
+#ifndef UNICODE
+#define UNICODE
+#endif
+#ifndef _UNICODE
+#define _UNICODE
+#endif
+
 #ifdef __ANDROID__
 #include <jni.h>
 #include <android/log.h>
@@ -13,13 +20,6 @@
 //if use glew static library, define GLEW_STATIC
 #ifndef GLEW_STATIC
 #define GLEW_STATIC
-#endif
-
-#ifndef UNICODE
-#define UNICODE
-#endif
-#ifndef _UNICODE
-#define _UNICODE
 #endif
 
 #include <GL/glew.h>
@@ -70,7 +70,8 @@
 #define LWORD(i)		i & 0xFFFF
 #define HWORD(i)		i >> 16 & 0xFFFF
 
-#define OFFSETOF(obj, mem) (int)(((obj*)0)->mem)
+
+#define OFFSETOF(obj, mem) (long long)(((obj*)0)->mem)
 
 #define PI				3.1415926f
 #define TO_RAD(x)		x * PI / 180.0f

@@ -19,24 +19,26 @@ Scene::~Scene()
 
 void Scene::Init()
 {
-
 }
-
 void Scene::SetViewport(FLOAT width, FLOAT height)
 {
-
 }
 void Scene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 {
-
 }
 void Scene::OnKey(UINT event, UCHAR chr)
 {
-
+}
+void Scene::OnResume()
+{
+	LOG_D("Scene on resume");
+}
+void Scene::OnPause()
+{
+	LOG_D("Scene on pause");
 }
 void Scene::Draw(FLOAT s)
 {
-
 }
 
 UINT Scene::GetDepthBuffer()
@@ -184,13 +186,7 @@ void SceneManager::Next(const CHAR * sceneName)
 
 	_initTransition();
 
-	auto iter = mScenes.find(sceneName);
-	if (iter == mScenes.end())
-	{
-		mCurrent = NULL;
-		return;
-	}
-	mCurrent = iter->second;
+	SetScene(sceneName);
 }
 
 FLOAT SceneManager::GetViewportWidth()
@@ -216,7 +212,10 @@ void SceneManager::SetScene(const CHAR * sceneName)
 		mCurrent = NULL;
 		return;
 	}
+	if (mCurrent)
+		mCurrent->OnPause();
 	mCurrent = iter->second;
+	mCurrent->OnResume();
 }
 
 Scene * SceneManager::GetScene(const CHAR * sceneName)

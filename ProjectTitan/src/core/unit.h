@@ -21,6 +21,7 @@ public:
 
 	void SetMoveAdd(FLOAT x, FLOAT y, FLOAT z);
 	cm::vec3 GetPosition();
+	cm::vec3 GetViewdir();
 
 	// LIGHT
 	void SetLightPos(FLOAT x, FLOAT y, FLOAT z, FLOAT w = 0.0f, BOOL specular = TRUE);
@@ -30,10 +31,10 @@ public:
 	void UpdateMaterial(BOOL specular);
 
 	// POSITION	virtual 
-	void Move(FLOAT x, FLOAT y, FLOAT z);
+	virtual void Move(FLOAT x, FLOAT y, FLOAT z);
 	virtual void Move(cm::vec3 pos);
-	void Rotate(FLOAT angle, FLOAT x, FLOAT y, FLOAT z);
-	void Scale(FLOAT x, FLOAT y, FLOAT z);
+	virtual void Rotate(FLOAT angle, FLOAT x, FLOAT y, FLOAT z);
+	virtual void Scale(FLOAT x, FLOAT y, FLOAT z);
 
 	// TEXTURE
 	void SetTexture(const CHAR * name, const CHAR * texture);
@@ -64,6 +65,9 @@ public:
 	cm::vec4 mAmbientColor;
 	cm::vec4 mDisffuseColor;
 	cm::vec4 mSpecularColor;
+
+	cm::vec3 mViewdir;
+	cm::vec3 mScale;
 };
 
 

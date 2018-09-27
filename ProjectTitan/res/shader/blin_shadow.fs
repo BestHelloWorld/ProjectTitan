@@ -2,6 +2,9 @@
 precision mediump float;
 #endif
 
+#define OFFSET 1.0 / 300.0
+#define COUNT 4
+
 uniform vec4 U_AmbientMaterial;
 uniform vec4 U_DiffuseMaterial;
 uniform vec4 U_SpecularMaterial;
@@ -31,16 +34,30 @@ float CalcShadow()
 
 	fragPos = V_LightFragSpacePos.xyz / V_LightFragSpacePos.w;
 	fragPos = (fragPos + 1.0) * 0.5;
-		
-	float depth = texture2D(U_ShadowMap, fragPos.xy).r;
+	
 	float currentDepth = fragPos.z;
+	float depth = 0.0;
 
-	if(depth + 0.0001 <= currentDepth)
-		return 1.0;
+	if(!(texture2D(U_ShadowMap, fragPos.xy).r + 0.0001 <= currentDepth))
+		return 0.0;
+
+//	vec2 offset = vec2(OFFSET);
+	for(int i = -COUNT / 2; i < COUNT / 2; ++i)
+	{
+		for(int j = -COUNT / 2; j < COUNT / 2; ++j)
+		{
+			if(texture2D(U_ShadowMap, vec2(fragPos.x + OFFSET * i, fragPos.y + OFFSET * j)).r + 0.0001 <= currentDepth)
+				depth += 1.0;
+		}
+	}
+
+	return depth / 16.0;
+//	if(depth + 0.0001 <= currentDepth)
+//		return 1.0;
 //	else if(depth + 0.0005 <= currentDepth)
 //		return 0.5;
-	else
-		return 0.0;
+//	else
+//		return 0.0;
 }
 
 float CalcFog(float distance, float near, float far)
@@ -72,11 +89,11 @@ void main()
 	// CALC BLIN SPECULAR
 	vec4 specular = vec4(0.0);
 	vec4 worldPos = V_WorldPos;
-	if(diffuse.x > 0.0)
+	//if(diffuse.x > 0.0)
 	{
 		vec3 viewDir = normalize(U_CameraPos - worldPos).xyz;
 		vec3 halfL = normalize(viewDir + L);
-		specular = U_SpecularMaterial * pow(max(0.0, dot(N, halfL)), 8.0);
+		specular = U_SpecularMaterial * pow(max(0.0, dot(N, halfL)), 16.0);
 	}
 
 	// TEXTURE
@@ -88,10 +105,8 @@ void main()
 	}
 
 	// CALC SHADOW
-	if(depth == 1.0)
-		color = texture2D(U_Texture, V_Texcoord)*(U_AmbientMaterial + diffuse + specular) ;
-	else if(depth == 0.5)
-		color = texture2D(U_Texture, V_Texcoord)*(U_AmbientMaterial + diffuse + specular) * 0.8;
+	if(depth > 0.0)
+		color = texture2D(U_Texture, V_Texcoord)*(U_AmbientMaterial + diffuse + specular) * min((1.0 - depth) + 0.5, 1.0);
 	else
 		color = texture2D(U_Texture, V_Texcoord)*(U_AmbientMaterial + diffuse + specular);
 

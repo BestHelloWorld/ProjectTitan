@@ -54,7 +54,7 @@ BulletProc(Model * model)
 		{
 			textPos = Bullet.mProgram->mCamera->WorldToScreen(pos1);
 			textPos = textPos / textPos.w;
-			
+
 			model->Hide();
 			Enemy.mModels[i]->SetMoveAdd(0.0f, -0.1f, 0.0f);
 			textTime = 0.0f;
@@ -64,7 +64,7 @@ BulletProc(Model * model)
 	}
 }
 
-void 
+void
 EnemyProc(Model * model)
 {
 	cm::vec3 raven_pos = raven.GetPosition();
@@ -103,8 +103,6 @@ MainScene::Init()
 	skybox.SetSize(10.0f);
 	skybox.SetColor(0.5f, 0.5f, 0.5f);
 
-	//spriteProg.Init("res/shader/v.vs", "res/shader/f.fs", &cam);
-	//imgSprite.Init(spriteProg.GetProgramId(), "res/images/earth.bmp", 0.0f, 0.0f, 100.0f, 100.0f);
 
 	fsq.Init(FULL_SCREEN);
 
@@ -170,8 +168,6 @@ MainScene::SetViewport(FLOAT width, FLOAT height)
 	cam.Rotate(180.0f, 0.0f, 0.0f);
 
 	tb = TextBitmap::GetInstance();
-	tb->Init("res/shader/v.vs", "res/shader/f.fs", width, height,
-		"res/font/msyh.ttc");
 
 	//SHADOW INIT
 	shadow.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs",
@@ -188,8 +184,16 @@ MainScene::SetViewport(FLOAT width, FLOAT height)
 	center = CreateTexture2DFromBMP("res/images/center.bmp");
 
 	fsq.InitBlur(gWidth, gHeight, FULL_SCREEN);
+}
 
+void MainScene::OnResume()
+{
 	Start();
+}
+
+void MainScene::OnPause()
+{
+	Stop();
 }
 
 void
@@ -340,7 +344,7 @@ MainScene::OnKey(UINT event, UCHAR chr)
 			Enemy.Emit((FLOAT)(rand() % 100 - 50), 0.0f, 0.0f);
 			break;
 		case 'B':
-			Stop();
+			SceneManager::GetInstance()->Next("WELC");
 			break;
 		}
 		break;
@@ -400,7 +404,7 @@ MainScene::Draw(FLOAT s)
 	skybox.Draw();
 	DEPTH_TEST_BEGIN;
 
-	terrain.Draw();
+	terrain.Draw(s);
 	raven.Draw();
 
 	Bullet.Draw();
@@ -422,7 +426,7 @@ MainScene::Draw(FLOAT s)
 		framesPerSecond = 0;
 		currentMS = 0;
 		// AUTO EMIT
-		if(isEnemy)
+		if (isEnemy)
 			Enemy.Emit((FLOAT)(rand() % 100 - 50), 0.0f, 0.0f);
 		if (score > 10)
 			score -= 10;
@@ -440,7 +444,7 @@ MainScene::Draw(FLOAT s)
 	if (textTime < 1.0f)
 	{
 		textTime += (s);
-		swprintf(str, 120, L"Лїжа!!\0");
+		swprintf(str, 120, L"Hit!\0");
 		tb->SetAlpha(POW_2(1.0f - textTime));
 		tb->Draw(str, gWidth * 0.5f * textPos.x, gHeight * 0.5f * textPos.y);
 	}
@@ -486,7 +490,6 @@ void MainScene::Stop()
 	isGameover = FALSE;
 	isEnemy = FALSE;
 
-	SceneManager::GetInstance()->Next("WELC");
 }
 
 Terrain welc_bg;
@@ -526,7 +529,6 @@ WelcScene::SetViewport(FLOAT width, FLOAT height)
 	bm.New("res/images/gray.bmp", L"START", 100.0f, -50.0f, 100.0f, 50.0f, []()->void
 	{
 		SceneManager::GetInstance()->Next("MAIN");
-		((MainScene*)SceneManager::GetInstance()->GetScene("MAIN"))->Start();
 	});
 
 	bm.New("res/images/gray.bmp", L"TIME", 100.0f, -120.0f, 100.0f, 50.0f, []()->void
@@ -569,7 +571,6 @@ WelcScene::OnKey(UINT event, UCHAR chr)
 		{
 		case 'B':
 			SceneManager::GetInstance()->Next("MAIN");
-			((MainScene*)SceneManager::GetInstance()->GetScene("MAIN"))->Start();
 			break;
 		case 'D':
 			InitDOF(1);
@@ -591,7 +592,7 @@ WelcScene::Draw(FLOAT s)
 	mCam.Update();
 
 	bm.Draw();
-	
+
 	welc_woo += .1f * s;
 	welc_bg.SetUniform4f("U_WaterOption", 1.f, 3.1415926f + sin(welc_woo) * .2f, 10.f, 0.f);
 	//glPointSize(2.f);
@@ -613,8 +614,8 @@ cm::mat4 terrain_position;
 const float hour_rad = 360.0f / 12.0f;
 const float min_rad = 360.0f / 60.0f;
 
-Camera shadow_cam;
-Shadow shadow;
+Camera time_shadow_cam;
+Shadow time_shadow;
 
 FullScreenQuad date_fsq;
 BOOL date_isShowFsq = FALSE;
@@ -623,7 +624,7 @@ BOOL date_isShowFsq = FALSE;
 void TimeScene::Init()
 {
 	mCam.Init(cm::vec3(0.0f, 0.0, 1.0f), cm::vec3(0.0f, 0.0f, 0.0f), cm::vec3(0.0f, 1.0f, 0.0f));
-	shadow_cam.Init(cm::vec3(0.0f, 30.0, 15.0f), cm::vec3(0.0f, 0.0f, 0.0f), cm::vec3(0.0f, 1.0f, 0.0f));
+	time_shadow_cam.Init(cm::vec3(0.0f, 30.0, 15.0f), cm::vec3(0.0f, 0.0f, 0.0f), cm::vec3(0.0f, 1.0f, 0.0f));
 
 	circle.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", "res/objs/Sphere.obj", &mCam);
 	circle.SetLightPos(0.0f, 1.0f, 0.0f);
@@ -635,7 +636,7 @@ void TimeScene::Init()
 		hours_dot_position[i] = cm::translate(0.0f, 0.0f, -CIRCLE_OFFSET_Z)*cm::rotate((i*hour_rad), 0.0f, 0.0f, 1.0f)*cm::translate(0.0f, 10.0f, 0.0f)*cm::scale(0.5f, 1.0f, 0.5f);
 	}
 
-	terrain_position = cm::translate(0.0f, -15.0f, -CIRCLE_OFFSET_Z)*cm::scale(20.0f, 2.0f, 20.0f);
+	terrain_position = cm::translate(0.0f, -20.0f, -CIRCLE_OFFSET_Z)*cm::scale(20.0f, 6.0f, 20.0f);
 
 	center = CreateTexture2DFromBMP("res/images/center.bmp");
 	//InitDOF(center);
@@ -652,20 +653,23 @@ cm::mat4 SetTime(float deg, cm::mat4 scale)
 
 void TimeScene::SetViewport(FLOAT width, FLOAT height)
 {
-	mCam.Switch3D(45.0f, width / height);
+	mCam.Switch3D(40.0f, width / height);
 	mCam.mOffset = 30.0f;
-	shadow_cam.Switch2D(40.0f, 40.0f);
-	shadow_cam.mOffset = 30.0f;
+	time_shadow_cam.Switch2D(40.0f, 40.0f);
+	time_shadow_cam.mOffset = 30.0f;
 
-	shadow.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &shadow_cam, (INT)width, (INT)height);
-	shadow.Add(&circle);
-	shadow.Clear();
+	time_shadow.Init("res/shader/blin_shadow.vs", "res/shader/blin_shadow.fs", &time_shadow_cam, (INT)width, (INT)height);
+	time_shadow.Add(&circle);
+	time_shadow.Clear();
 
 	date_fsq.InitBlur(width * 2.0f, height * 2.0f, FULL_SCREEN);
-	date_fsq.SetTexture(shadow.GetDepthBuffer());
+	date_fsq.SetTexture(time_shadow.GetDepthBuffer());
 
-	circle.mModel->mLightProjectMatrix = shadow_cam.GetProjectionMatrix();
-	circle.mModel->mLightViewMatrix = shadow_cam.GetViewMatrix();
+	circle.mModel->mLightProjectMatrix = time_shadow_cam.GetProjectionMatrix();
+	circle.mModel->mLightViewMatrix = time_shadow_cam.GetViewMatrix();
+
+	mWidth = width;
+	mHeight = height;
 }
 
 void TimeScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
@@ -674,7 +678,7 @@ void TimeScene::OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y)
 	{
 	case EVENT_MOVE:
 		mCam.Rotate(x / 4.0f, y / 4.0f);
-		shadow_cam.Rotate(x / 8.0f, y / 8.0f);
+		time_shadow_cam.Rotate(x / 8.0f, y / 8.0f);
 		break;
 	}
 }
@@ -689,24 +693,39 @@ void TimeScene::OnKey(UINT event, UCHAR chr)
 	}
 }
 
+float last_second = 0.0f;
+float ms = 0.0f;
+cm::mat4 hours;
+cm::mat4 minute;
+cm::mat4 second;
+
+FLOAT currentMS = 0.0f;
+FLOAT framesPerSecond = 0.0f;
+INT nframesPerSecond = 0;
 void TimeScene::Draw(FLOAT s)
 {
 	mCam.Update();
-	shadow_cam.Update();
+	time_shadow_cam.Update();
 
 	time_t t = time(0);
 	tm * date = std::localtime(&t);
-	cm::mat4 hours = SetTime(hour_rad*date->tm_hour, cm::scale(0.3f, 2.0f, 0.3f));
-	cm::mat4 minute = SetTime(min_rad*date->tm_min, cm::scale(0.2f, 3.0f, 0.2f));
-	cm::mat4 second = SetTime(min_rad*date->tm_sec, cm::scale(0.15f, 4.0f, 0.15f));
+	hours = SetTime(hour_rad*date->tm_hour, cm::scale(0.3f, 2.0f, 0.3f));
+	minute = SetTime(min_rad*date->tm_min, cm::scale(0.2f, 3.0f, 0.2f));
+	if (last_second != date->tm_sec)
+	{
+		last_second = date->tm_sec;
+		ms = 0.0f;
+	}
+	ms += s;
+	second = SetTime(min_rad*(last_second + ms), cm::scale(0.2f, 4.0f, 0.2f));
 
-	shadow.SetDrawFunction([]()->void {
+	time_shadow.SetDrawFunction([]()->void {
 
 		time_t t = time(0);
 		tm * date = std::localtime(&t);
-		cm::mat4 hours = SetTime(hour_rad*date->tm_hour, cm::scale(0.3f, 2.0f, 0.3f));
-		cm::mat4 minute = SetTime(min_rad*date->tm_min, cm::scale(0.2f, 3.0f, 0.2f));
-		cm::mat4 second = SetTime(min_rad*date->tm_sec, cm::scale(0.15f, 4.0f, 0.15f));
+		//cm::mat4 hours = SetTime(hour_rad*date->tm_hour, cm::scale(0.3f, 2.0f, 0.3f));
+		//cm::mat4 minute = SetTime(min_rad*date->tm_min, cm::scale(0.2f, 3.0f, 0.2f));	
+		//cm::mat4 second = SetTime(min_rad*(last_second + ms), cm::scale(0.2f, 4.0f, 0.2f));
 
 		for (int i = 0; i < 12; ++i)
 		{
@@ -726,7 +745,7 @@ void TimeScene::Draw(FLOAT s)
 		*circle.mModel->mModelMatrix = terrain_position;
 		circle.ShadowDraw();
 	});
-	shadow.Draw();
+	time_shadow.Draw();
 
 	CLEAR_COLOR(0.1f, 0.2f, 0.4f);
 	for (int i = 0; i < 12; ++i)
@@ -752,4 +771,21 @@ void TimeScene::Draw(FLOAT s)
 		date_fsq.Draw(FALSE);
 		//InitDOF(center);
 	}
+
+	BLEND_BEGIN;
+	currentMS += s;
+	framesPerSecond++;
+	if (currentMS >= 1.0f)
+	{
+		nframesPerSecond = framesPerSecond;
+		framesPerSecond = 0;
+		currentMS = 0;
+		LOG_D("Frame Per Second : %d", nframesPerSecond);
+	}
+	WCHAR str[128] = { 0 };
+	swprintf(str, 120, L"FramesPerSecond : %d\0", nframesPerSecond);
+	TextBitmap * tb = TextBitmap::GetInstance();
+	tb->SetAlpha(1.0f);
+	tb->Draw(str, -mWidth * 0.5f, mHeight * 0.5f - 30);
+	BLEND_END;
 }

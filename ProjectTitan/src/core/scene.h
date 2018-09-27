@@ -25,6 +25,8 @@ public:
 	virtual void SetViewport(FLOAT width, FLOAT height);
 	virtual void OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y);
 	virtual void OnKey(UINT event, UCHAR chr);
+	virtual void OnResume();
+	virtual void OnPause();
 	virtual void Draw(FLOAT s);
 
 	UINT GetDepthBuffer();

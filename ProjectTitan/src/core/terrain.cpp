@@ -117,7 +117,7 @@ void Terrain::InitVAO()
 	if (location >= 0)
 	{
 		glEnableVertexAttribArray(location);
-		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)OFFSETOF(Vertex, Position));
+		glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, Position));
 	}
 	location = glGetAttribLocation(program, SHADER_ATTRIB_TEXCOORD);
 	if (location >= 0)

@@ -21,6 +21,8 @@ class MainScene : public Scene
 public:
 	void Init();
 	void SetViewport(FLOAT width, FLOAT height);
+	void OnResume();
+	void OnPause();
 	void OnTouch(UINT event, FLOAT tindex, FLOAT x, FLOAT y);
 	void OnKey(UINT event, UCHAR chr);
 	void EventUpdate(FLOAT s);
@@ -80,6 +82,8 @@ public:
 	Skybox skybox;
 
 	ButtonManager bm;
+
+	FLOAT mWidth, mHeight;
 };
 
 #endif

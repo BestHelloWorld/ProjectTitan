@@ -1918,7 +1918,10 @@ namespace cm
 			v2 = v2.normalize();
 			//FLOAT y = (v1.y * v2.y) <= 0.0f ? -1.0f : 1.0f;
 			//FLOAT x = (v1.x * v2.x) <= 0.0f ? -1.0f : 1.0f;
-			return _ANGLE(acosf((v1 * v2) / (v1.magnitude() * v2.magnitude())))/* * y*/;
+			FLOAT mo = v1.magnitude() * v2.magnitude();
+			if (mo == 0.0f)
+				return 0.0f;
+			return _ANGLE(acosf((v1 * v2) / mo))/* * y*/;
 		}
 
 		mat4 translate(FLOAT x = 0.0f, FLOAT y = 0.0f, FLOAT z = 0.0f)
@@ -1973,38 +1976,40 @@ namespace cm
 			return q.quat2mat3(q);
 		}
 
-		mat4 rotate(FLOAT eyex, FLOAT eyey, FLOAT eyez, FLOAT centerx, FLOAT centery, FLOAT centerz, FLOAT upx, FLOAT upy, FLOAT upz)
-		{
-			mat4 r;
-			vec3 eye(eyex, eyey, eyez);
-			vec3 center(centerx, centery, centerz);
-			vec3 up(upx, upy, upz);
+		//mat4 rotate(FLOAT eyex, FLOAT eyey, FLOAT eyez, FLOAT centerx, FLOAT centery, FLOAT centerz, FLOAT upx, FLOAT upy, FLOAT upz)
+		//{
+		//	mat4 r;
+		//	vec3 eye(eyex, eyey, eyez);
+		//	vec3 center(centerx, centery, centerz);
+		//	vec3 up(upx, upy, upz);
+		//	vec3 z = eye - center;
+		//	z.normalize();
+		//	vec3 x = up.cross(z);
+		//	x.normalize();
+		//	vec3 y = z.cross(x);
+		//	r.v[0] = x.x; 
+		//	r.v[1] = x.y;
+		//	r.v[2] = x.z;
+		//	r.v[3] = 0.0f;
+		//	r.v[4] = y.x;
+		//	r.v[5] = y.y;
+		//	r.v[6] = y.z;
+		//	r.v[7] = 0.0f;
+		//	r.v[8] = z.x;
+		//	r.v[9] = z.y;
+		//	r.v[10] = z.z;
+		//	r.v[11] = 0.0f;
+		//	r.v[12] = 0.0f;
+		//	r.v[13] = 0.0f;
+		//	r.v[14] = 0.0f;
+		//	r.v[15] = 1.0f;
+		//	return r;
+		//}
 
-			vec3 z = eye - center;
-			z.normalize();
-			vec3 x = up.cross(z);
-			x.normalize();
-			vec3 y = z.cross(x);
-
-			r.v[0] = x.x; 
-			r.v[1] = x.y;
-			r.v[2] = x.z;
-			r.v[3] = 0.0f;
-			r.v[4] = y.x;
-			r.v[5] = y.y;
-			r.v[6] = y.z;
-			r.v[7] = 0.0f;
-			r.v[8] = z.x;
-			r.v[9] = z.y;
-			r.v[10] = z.z;
-			r.v[11] = 0.0f;
-			r.v[12] = 0.0f;
-			r.v[13] = 0.0f;
-			r.v[14] = 0.0f;
-			r.v[15] = 1.0f;
-
-			return r;
-		}
+		//mat4 rotate(cm::vec3 eye, cm::vec3 center, cm::vec3 up)
+		//{
+		//	return rotate(eye.x, eye.y, eye.z, center.x, center.y, center.z, up.x, up.y, up.z);
+		//}
 
 		mat4 lookAt(FLOAT eyex, FLOAT eyey, FLOAT eyez, FLOAT centerx, FLOAT centery, FLOAT centerz, FLOAT upx, FLOAT upy, FLOAT upz)
 		{

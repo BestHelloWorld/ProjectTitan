@@ -64,6 +64,7 @@ LoadFileContent(const CHAR *path, INT &fileSize)
 		buffer[nLen] = '\0';
 		return buffer;
 	}
+
 	return 0;
 #endif
 

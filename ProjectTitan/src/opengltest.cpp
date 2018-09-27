@@ -15,12 +15,17 @@ void Init()
 	manager->AddScene("WELC", new WelcScene);
 	manager->AddScene("TIME", new TimeScene);
 	manager->InitScenes();
+
 	manager->SetScene("WELC");
 }
 
 void SetViewportSize(FLOAT width, FLOAT height)
 {
 	manager->SetViewport(width, height);
+
+	TextBitmap * tb = TextBitmap::GetInstance();
+	tb->Init("res/shader/v.vs", "res/shader/f.fs", width, height,
+		"res/font/msyh.ttc");
 }
 
 void Draw(FLOAT elapse)

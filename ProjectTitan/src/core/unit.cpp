@@ -134,6 +134,11 @@ cm::vec3 Unit::GetPosition()
 	return mModel->GetPosition();
 }
 
+cm::vec3 Unit::GetViewdir()
+{
+	return cm::vec3();
+}
+
 void Unit::Scale(FLOAT x, FLOAT y, FLOAT z)
 {
 	mModel->Scale(x, y, z);
@@ -144,14 +149,14 @@ void Unit::Draw()
 	if (mIsLight)
 	{
 		Camera* cam = mProgram->GetCamera();
-		mProgram->SetUniform4f(SHADER_UNIFORM_CAMERA_POSITION, cam->mEye.x, cam->mEye.y, cam->mEye.z, 1.0f);
+		cm::vec3 eye = cam->GetEyePos();
+		mProgram->SetUniform4f(SHADER_UNIFORM_CAMERA_POSITION, eye.x, eye.y, eye.z, 1.0f);
 	}
 	if (mShadow)
 	{
 		mModel->SetShadowCamera(*mShadow->shadowCam);
 		mProgram->SetTexture(SHADER_SAMPLER2D_SHADOW_TEXTURE, mShadow->shadowMap);
 	}
-
 	mProgram->Bind();
 	mModel->Draw();
 	mProgram->Unbind();
